@@ -601,8 +601,8 @@ export default function OfficeMap({
                 onClick={() => onRoomSelect(room.id)}
                 className={`absolute rounded-2xl border-2 cursor-pointer transition-all duration-300 flex flex-col justify-between p-3.5 overflow-hidden text-left ${theme.textColor} ${theme.border} ${
                   isTargeted 
-                    ? "border-emerald-400 ring-4 ring-emerald-500/25 shadow-[0_0_25px_rgba(16,185,129,0.3)] scale-[1.03]" 
-                    : "shadow-[inset_2px_2px_0px_rgba(255,255,255,0.08),_inset_-2px_-2px_0px_rgba(0,0,0,0.5),_4px_4px_0px_rgba(0,0,0,0.4)] hover:border-slate-450 hover:scale-[1.01]"
+                    ? "z-10 border-emerald-400 ring-4 ring-emerald-500/25 shadow-[0_0_25px_rgba(16,185,129,0.3)] scale-[1.03]" 
+                    : "z-0 shadow-[inset_2px_2px_0px_rgba(255,255,255,0.08),_inset_-2px_-2px_0px_rgba(0,0,0,0.5),_4px_4px_0px_rgba(0,0,0,0.4)] hover:border-slate-450 hover:scale-[1.01]"
                 }`}
                 style={{
                   left: `${room.coordinates.x}%`,
@@ -765,7 +765,7 @@ export default function OfficeMap({
               const topPercent = targetRoom.coordinates.y + (targetRoom.coordinates.height * (yOffset / 100));
 
               const hasMessage = !!recentDialogs[char.id];
-              const charZ = activeRoomId === targetRoom.id ? "24px" : "11px";
+              const charZ = activeRoomId === targetRoom.id ? "38px" : "28px";
 
               return (
                 <motion.div
@@ -780,10 +780,10 @@ export default function OfficeMap({
                   }}
                   exit={{ opacity: 0, scale: 0.8 }}
                   transition={{ type: "spring", stiffness: 100, damping: 15 }}
-                  className="absolute z-30 pointer-events-none"
+                  className="absolute z-[100] pointer-events-none"
                   style={{
                     transform: isIsometric 
-                      ? `translate(-50%, -50%) rotateZ(38deg) rotateX(-54deg) translateZ(${charZ})` 
+                      ? `translate(-50%, -50%) translateZ(${charZ}) rotateZ(38deg) rotateX(-54deg)` 
                       : `translate(-50%, -50%) translateZ(${charZ})`,
                     transformStyle: "preserve-3d",
                   }}
