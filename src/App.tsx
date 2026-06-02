@@ -343,71 +343,72 @@ export default function App() {
         <aside className="w-full lg:w-72 bg-[#090d16] border-b lg:border-b-0 lg:border-r border-[#151e33] flex flex-col p-5 space-y-6 z-20 flex-shrink-0">
           
           {/* Symmetrical Retro Monitor Logo Header */}
-          <div className="flex items-center gap-3 border-b border-[#141d33] pb-4 animate-[fadeIn_0.5s_ease-out]">
-            <div className="w-9 h-9 bg-gradient-to-tr from-[#111e38] to-[#1e3a6d] rounded-xl flex items-center justify-center text-[#38bdf8] border border-[#38bdf8]/50 shadow-[0_0_15px_rgba(56,189,248,0.3)] select-none font-mono font-bold text-base">
-              🖥️
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5 leading-none">
-                <span className="text-xs font-black tracking-widest text-slate-100 uppercase font-display">VIRTUAL</span>
-                <span className="text-xs font-black tracking-widest text-[#2b96ff] uppercase font-display">OFFICE</span>
+          <div className="flex items-center gap-3 border-b border-[#141d33] pb-4 select-none">
+            {/* Retro PC CRT Monitor Box in SVG/CSS */}
+            <div className="relative w-11 h-9 bg-[#1a253d] rounded-md flex flex-col items-center justify-between p-1 border border-slate-650/80 border-slate-600 shadow-[0_0_12px_rgba(56,189,248,0.25)] flex-shrink-0">
+              {/* Inner Green Grid Screen */}
+              <div className="w-full h-[20px] bg-[#1d5c2e] border border-[#22c55e]/30 rounded-[3px] flex items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.12)_1px,transparent_1px)] bg-[size:100%_3.5px] pointer-events-none"></div>
+                <span className="text-[9px] text-[#4ade80] font-black z-10 animate-pulse">💻</span>
               </div>
-              <span className="text-[9.5px] font-mono font-bold text-[#475569] uppercase tracking-widest mt-1.5 block">V2.5 STABLE ENVIRONMENT</span>
+              {/* Monitor stand */}
+              <div className="w-4 h-1 bg-slate-500 rounded-sm leading-none -mt-0.5"></div>
+              <div className="w-6 h-[1.5px] bg-slate-400 rounded-full"></div>
+            </div>
+            
+            <div className="text-left leading-none flex flex-col justify-center">
+              <div className="flex items-center gap-1">
+                <span className="text-[17px] font-black tracking-wider text-slate-100 font-display">VIRTUAL</span>
+              </div>
+              <span className="text-[17px] font-black tracking-wider text-[#2b96ff] font-display mt-0.5">OFFICE</span>
             </div>
           </div>
 
           {/* User Profile CEO Module (You) */}
-          <div className="bg-[#0b101c] border border-[#1e2a44] rounded-2xl p-4 flex flex-col gap-3 shadow-lg relative group">
-            <div className="flex items-center gap-3.5">
-              <div className="relative w-12 h-12 bg-slate-950 rounded-full border border-emerald-500/80 flex items-center justify-center p-0.5 overflow-hidden select-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]">
-                <img 
-                  src={userCharacter.avatarUrl} 
-                  alt="CEO avatar" 
-                  className="w-full h-full object-cover scale-110 rendering-pixelated"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-
-              <div className="flex-1 leading-none">
-                <div className="flex items-center gap-1.5 mb-1 text-left">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse border border-emerald-400"></span>
-                  <span className="text-[9px] font-bold text-emerald-400 font-mono uppercase tracking-wider">Online</span>
-                </div>
-                
-                {isEditingCeoName ? (
-                  <div className="flex gap-1 items-center mt-1">
-                    <input 
-                      id="ceo-name-input"
-                      type="text"
-                      value={ceoName}
-                      onChange={(e) => setCeoName(e.target.value)}
-                      onBlur={() => setIsEditingCeoName(false)}
-                      onKeyDown={(e) => { if (e.key === "Enter") setIsEditingCeoName(false); }}
-                      className="bg-[#05080f] px-2 py-0.5 border border-emerald-500 rounded text-[10px] text-white max-w-[100px] font-mono font-bold"
-                      autoFocus
-                    />
-                    <button onClick={() => setIsEditingCeoName(false)} className="text-emerald-400 text-[10px] font-black">OK</button>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-1">
-                    <h3 className="text-xs font-black text-white tracking-wide max-w-[130px] truncate font-display">
-                      {ceoName}
-                    </h3>
-                    <button onClick={() => setIsEditingCeoName(true)} className="p-0.5 hover:bg-slate-800 rounded text-gray-500 hover:text-white transition-colors cursor-pointer" title="Edit Name">
-                      <Edit3 className="w-3 h-3" />
-                    </button>
-                  </div>
-                )}
-                
-                <span className="text-[9.5px] font-mono font-bold text-sky-400/80 tracking-wide block mt-1.5 text-left">Product Designer</span>
-              </div>
+          <div className="bg-[#0b101c] border border-[#1e2a44] rounded-2xl p-3.5 flex items-center gap-3 shadow-md relative group">
+            <div className="relative w-11 h-11 bg-slate-950 rounded-full border border-emerald-500 flex items-center justify-center p-0.5 overflow-hidden select-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] flex-shrink-0">
+              <img 
+                src={userCharacter.avatarUrl} 
+                alt="CEO avatar" 
+                className="w-full h-full object-cover scale-110 rendering-pixelated"
+                referrerPolicy="no-referrer"
+              />
+              {/* Green status circle */}
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#0b101c] shadow"></span>
             </div>
 
-            <div className="bg-[#05080f]/80 px-3 py-2 rounded-xl border border-[#16203a] flex justify-between items-center text-[10px] leading-none">
-              <span className="text-[#475569] font-mono font-bold">CURRENT:</span>
-              <strong className="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 font-bold uppercase font-mono">
-                {OFFICE_ROOMS.find(r => r.id === activeRoomId)?.nameEn || "Lobby"}
-              </strong>
+            <div className="flex-1 leading-tight text-left min-w-0">
+              <div className="flex items-center gap-1.5 text-left mb-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse border border-emerald-400"></span>
+                <span className="text-[8.5px] font-bold text-emerald-400 font-mono uppercase tracking-wider">Online</span>
+              </div>
+              
+              {isEditingCeoName ? (
+                <div className="flex gap-1 items-center mt-0.5">
+                  <input 
+                    id="ceo-name-input"
+                    type="text"
+                    value={ceoName}
+                    onChange={(e) => setCeoName(e.target.value)}
+                    onBlur={() => setIsEditingCeoName(false)}
+                    onKeyDown={(e) => { if (e.key === "Enter") setIsEditingCeoName(false); }}
+                    className="bg-[#05080f] px-1.5 py-0.5 border border-emerald-500 rounded text-[9.5px] text-white max-w-[90px] font-mono font-bold"
+                    autoFocus
+                  />
+                  <button onClick={() => setIsEditingCeoName(false)} className="text-emerald-400 text-[9px] font-extrabold">OK</button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1">
+                  <h3 className="text-xs font-black text-white tracking-wide truncate max-w-[110px] font-display">
+                    {ceoName}
+                  </h3>
+                  <button onClick={() => setIsEditingCeoName(true)} className="p-0.5 hover:bg-slate-800 rounded text-gray-500 hover:text-white transition-colors cursor-pointer" title="Edit Name">
+                    <Edit3 className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+              
+              <span className="text-[9.5px] font-mono text-gray-400 tracking-wide block mt-0.5 truncate">Product Designer</span>
             </div>
           </div>
 
@@ -415,79 +416,83 @@ export default function App() {
           <div className="flex flex-col flex-1 min-h-[220px] space-y-2">
             <button 
               onClick={() => setShowAllPeople(!showAllPeople)}
-              className="flex justify-between items-center text-[11px] font-black uppercase tracking-widest text-[#9edcfe] cursor-pointer hover:text-white transition-colors py-1 pl-1"
+              className="flex justify-between items-center text-[10.5px] font-black uppercase tracking-widest text-[#9edcfe] cursor-pointer hover:text-white transition-colors py-1 pl-0.5"
             >
               <div className="flex items-center gap-1.5">
-                <Users className="w-3.5 h-3.5 text-sky-450 text-sky-400" />
+                <Users className="w-3.5 h-3.5 text-sky-400" />
                 <span>People (12)</span>
               </div>
-              <span className="text-[9px] text-[#2b96ff] font-mono font-bold bg-[#2b96ff]/10 px-1.5 py-0.5 border border-[#2b96ff]/20 rounded-md">{showAllPeople ? "▼ LESS" : "▲ SHOW ALL"}</span>
+              <span className="text-[10px] text-[#2b96ff] font-mono font-bold bg-[#2b96ff]/10 px-1.5 py-0.5 border border-[#2b96ff]/20 rounded-md">▲</span>
             </button>
 
-            {/* People list start from Alice, filter out You (user) */}
-            <div className="space-y-1.5 max-h-[280px] overflow-y-auto pr-1">
-              {characters.filter(char => char.id !== "user").slice(0, showAllPeople ? 12 : 6).map(char => {
-                const isUserHere = activeRoomId === char.currentRoom;
-                return (
-                  <div 
-                    key={char.id}
-                    onClick={() => {
-                      handleRoomSelect(char.currentRoom);
-                      triggerSpeechBubble(char.id, `ยินดีต้อนรับครับบอส! แชทถามงานผมได้ในห้องนะครับ 😄`);
-                    }}
-                    className={`p-2 rounded-xl border cursor-pointer flex items-center justify-between transition-all duration-200 ${
-                      isUserHere
-                        ? "border-[#2b96ff]/50 bg-[#2b96ff]/5 text-white"
-                        : "bg-[#0b101c] border-[#131b2c] text-gray-300 hover:border-[#1e2a44]"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <img 
-                        src={char.avatarUrl} 
-                        alt={char.name} 
-                        className="w-7 h-7 rounded-full border border-slate-800 bg-slate-900 object-cover scale-105 rendering-pixelated" 
-                        referrerPolicy="no-referrer" 
-                      />
-                      <div className="leading-none text-left">
-                        <h4 className="text-[11.5px] font-bold text-white font-mono">{char.name}</h4>
-                        <p className="text-[8.5px] text-[#475569] font-semibold mt-0.5 leading-none">{char.role}</p>
+            {/* People list sorted as: Alice, Bob, Cathy, David, Eve, Frank */}
+            <div className="space-y-1.5 pr-1 max-h-[280px] overflow-y-auto custom-scrollbar-thin">
+              {(() => {
+                // Ensure correct display order matching the screenshot
+                const displayOrder = ["alice", "senior-dev", "cathy", "david", "eve", "code-reviewer"];
+                const list = displayOrder
+                  .map(id => characters.find(c => c.id === id))
+                  .filter(Boolean) as Character[];
+
+                return list.map(char => {
+                  const isUserHere = activeRoomId === char.currentRoom;
+                  return (
+                    <div 
+                      key={char.id}
+                      onClick={() => {
+                        handleRoomSelect(char.currentRoom);
+                        triggerSpeechBubble(char.id, `สวัสดีครับคุณบอส! แชทปรึกษางานผมในนี้ได้เลยนะครับ 😄`);
+                      }}
+                      className={`p-2 rounded-xl border cursor-pointer flex items-center justify-between transition-all duration-200 select-none ${
+                        isUserHere
+                          ? "border-[#2b96ff]/50 bg-[#2b96ff]/5 text-white shadow-sm"
+                          : "bg-[#0b101c] border-[#131b2c] text-gray-300 hover:border-[#1e2a44]"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <img 
+                          src={char.avatarUrl} 
+                          alt={char.name} 
+                          className="w-7 h-7 rounded-full border border-slate-800 bg-slate-900 object-cover scale-105 rendering-pixelated flex-shrink-0" 
+                          referrerPolicy="no-referrer" 
+                        />
+                        <div className="leading-none text-left min-w-0">
+                          <h4 className="text-[11px] font-bold text-white font-mono truncate">{char.name}</h4>
+                          <p className="text-[8.5px] text-[#5c6e88] font-bold mt-0.5 leading-none truncate">{char.role}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                        {isUserHere && (
+                          <span className="text-[7.5px] bg-[#2b96ff]/15 px-1 py-0.2 rounded text-[#2b96ff] border border-[#2b96ff]/10 font-bold font-mono">MEET</span>
+                        )}
+                        <span className={`w-1.5 h-1.5 rounded-full ${char.statusColor}`} title={char.status}></span>
                       </div>
                     </div>
-
-                    <div className="flex items-center gap-1">
-                      {isUserHere && (
-                        <span className="text-[7.5px] bg-[#2b96ff]/15 px-1 py-0.2 rounded text-[#2b96ff] border border-[#2b96ff]/10 font-bold font-mono">MEET</span>
-                      )}
-                      <span className={`w-1.5 h-1.5 rounded-full ${char.statusColor}`} title={char.status}></span>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                });
+              })()}
               
-              {!showAllPeople && (
-                <button 
-                  onClick={() => setShowAllPeople(true)}
-                  className="w-full text-center py-2 border border-dashed border-[#1d2b47] rounded-xl hover:border-[#2b96ff] text-[9.5px] font-bold font-mono text-[#2b96ff] hover:text-white transition-all bg-[#0b101c]/40 cursor-pointer"
-                >
-                  + Click to see 6 more employees...
-                </button>
-              )}
+              {/* "+ 6 more" trailing tag matching the screenshot precisely */}
+              <div className="text-center py-1.5 text-[9.5px] font-mono text-slate-500 font-bold uppercase tracking-wider bg-slate-950/20 rounded-xl border border-dashed border-slate-900/60 select-none">
+                + 6 more
+              </div>
             </div>
           </div>
 
           {/* QUICK LINKS Teleport links */}
           <div className="flex flex-col space-y-2 border-t border-[#131b2c] pt-4 mt-auto">
-            <span className="text-[10px] font-black uppercase tracking-widest text-[#2b96ff] font-mono pl-1 text-left">
-              Quick Links (Teleport)
+            <span className="text-[9.5px] font-black uppercase tracking-widest text-[#475569] font-mono pl-0.5 text-left select-none">
+              QUICK LINKS
             </span>
 
-            <ul className="grid grid-cols-1 gap-1.5 font-display">
+            <ul className="grid grid-cols-1 gap-1.5 font-sans">
               {[
-                { id: RoomId.LOBBY, la: "Lobby", th: "ล็อบบี้", col: "hover:border-[#2b6fc2]" },
-                { id: RoomId.MEETING, la: "Meeting Room", th: "ประชุมร่วม", col: "hover:border-[#555a64]" },
-                { id: RoomId.FOCUS, la: "Focus Room", th: "ตรวจวิเคราะห์", col: "hover:border-[#3f7a45]" },
-                { id: RoomId.PANTRY, la: "Pantry", th: "เครื่องชงกาแฟ", col: "hover:border-[#cc971c]" },
-                { id: RoomId.HELPDESK, la: "Help Desk", th: "รับคิวช่วยเหลือ", col: "hover:border-[#9c4c23]" },
+                { id: RoomId.LOBBY, label: "Lobby", icon: "🏠", iconBg: "bg-amber-500/10 border-amber-500/25 text-amber-400" },
+                { id: RoomId.MEETING, label: "Meeting Room", icon: "👥", iconBg: "bg-blue-500/10 border-blue-500/25 text-blue-400" },
+                { id: RoomId.FOCUS, label: "Focus Room", icon: "🧠", iconBg: "bg-purple-500/10 border-purple-500/25 text-purple-400" },
+                { id: RoomId.PANTRY, label: "Pantry", icon: "☕", iconBg: "bg-emerald-500/10 border-emerald-500/25 text-emerald-400" },
+                { id: RoomId.HELPDESK, label: "Help Desk", icon: "🚨", iconBg: "bg-rose-500/10 border-rose-500/25 text-rose-450 text-[#f43f5e]" },
               ].map(item => {
                 const isSelected = activeRoomId === item.id;
                 return (
@@ -495,14 +500,16 @@ export default function App() {
                     <button
                       id={`teleport-btn-${item.id}`}
                       onClick={() => handleRoomSelect(item.id)}
-                      className={`w-full px-3 py-2 rounded-xl border text-[10px] text-left transition-all flex justify-between items-center cursor-pointer ${
+                      className={`w-full px-2.5 py-1.5 rounded-xl border text-[11px] text-left transition-all flex items-center gap-2.5 cursor-pointer select-none ${
                         isSelected 
-                          ? "bg-[#0b101c] border-[#2b96ff] text-[#2b96ff] font-black shadow-inner translate-x-1" 
-                          : `bg-[#0b101c] border-transparent text-gray-400 ${item.col} hover:text-white`
+                          ? "bg-[#111827] border-[#2b96ff] text-white font-bold shadow-md translate-x-1" 
+                          : "bg-[#0b101c] border-[#131b2c] text-gray-400 hover:text-white hover:border-[#1e2a44]"
                       }`}
                     >
-                      <span className="font-bold">{item.la}</span>
-                      <span className="text-[8px] text-slate-500 font-mono">({item.th})</span>
+                      <span className={`w-5.5 h-5.5 rounded-lg border flex items-center justify-center text-[10px] ${item.iconBg}`}>
+                        {item.icon}
+                      </span>
+                      <span className="font-semibold">{item.label}</span>
                     </button>
                   </li>
                 );

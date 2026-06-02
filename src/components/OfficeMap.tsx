@@ -47,63 +47,382 @@ const getCharacterTagColor = (id: string, defaultColor: string) => {
   }
 };
 
+// Configurator helper to map characters to rich custom pixel sprite details
+const getPixelSpriteData = (id: string) => {
+  switch (id) {
+    case "user":
+      return {
+        hair: "#5c4033", // Brown
+        skin: "#fed7aa", // Light peach
+        shirt: "#1d4ed8", // Blue
+        pants: "#1e293b", // Slate
+        hasCrown: true,
+        gender: "m"
+      };
+    case "alice":
+      return {
+        hair: "#ec4899", // Pink
+        skin: "#ffd5dc", // Pinkish white
+        shirt: "#db2777", // Dark Pink
+        pants: "#4f46e5", // Purple skirt
+        hasHairBow: true,
+        gender: "f"
+      };
+    case "senior-dev":
+    case "bob":
+      return {
+        hair: "#78350f", // Dark Ginger
+        skin: "#fed7aa", // Peach
+        shirt: "#ea580c", // Yellow/Orange
+        pants: "#1e3a8a", // Blue
+        hasBeard: true,
+        gender: "m"
+      };
+    case "cathy":
+      return {
+        hair: "#0f172a", // Black curly
+        skin: "#a16207", // Dark warm skin
+        shirt: "#7e22ce", // Purple
+        pants: "#312e81", // Dark leggings
+        hasGoldEarrings: true,
+        gender: "f"
+      };
+    case "david":
+      return {
+        hair: "#1e293b", // Dark Slate hair
+        skin: "#fbcfe8", // Pale pink/cream
+        shirt: "#059669", // Emerald Green
+        pants: "#4b5563", // Gray slate pants
+        hasGlasses: true,
+        gender: "m"
+      };
+    case "eve":
+      return {
+        hair: "#8b5cf6", // Violet hair
+        skin: "#fed7aa", // Peach
+        shirt: "#db2777", // Hot Pink outer hoodie
+        pants: "#1e1b4b", // Dark pants
+        hasPigtails: true,
+        gender: "f"
+      };
+    case "code-reviewer":
+    case "frank":
+      return {
+        hair: "#451a03", // Auburn hair
+        skin: "#fde047", // Golden yellow skin
+        shirt: "#ea580c", // DevOps orange shirt
+        pants: "#0284c7", // Bright dev-blue pants
+        hasHeadphones: true,
+        gender: "m"
+      };
+    case "somchai":
+      return {
+        hair: "#94a3b8", // Silver/Grey hair
+        skin: "#fef08a", // Soft Yellow-peach skin
+        shirt: "#2563eb", // Royal blue sweater
+        pants: "#111827", // Dark pants
+        hasGlasses: true,
+        gender: "m"
+      };
+    case "wichai":
+      return {
+        hair: "#1e293b", // Slate-black charcoal hair
+        skin: "#fed7aa", // Peach skin
+        shirt: "#dc2626", // Red database engineer shirt
+        pants: "#4b5563", // Grey pants
+        hasTie: true,
+        gender: "m"
+      };
+    case "ladda":
+      return {
+        hair: "#ea580c", // Bright ginger-red hair
+        skin: "#ffedd5", // Light pale skin
+        shirt: "#10b981", // Green top
+        pants: "#4f46e5", // Indigo trousers
+        hasHairBow: true,
+        gender: "f"
+      };
+    case "somsak":
+      return {
+        hair: "#0f172a", // Navy black hair
+        skin: "#fde047", // Golden skin tone
+        shirt: "#475569", // Gray tech utility jacket
+        pants: "#334155", // Slate pants
+        hasBeard: true,
+        gender: "m"
+      };
+    case "nipa":
+      return {
+        hair: "#fbbf24", // Blonde/gold ponytail line
+        skin: "#ffedd5", // Pale peach skin
+        shirt: "#ec4899", // QA hot pink shirt
+        pants: "#111827", // Black testing skirt
+        hasPigtails: true,
+        gender: "f"
+      };
+    default:
+      return {
+        hair: "#475569",
+        skin: "#fed7aa",
+        shirt: "#334155",
+        pants: "#111827",
+        gender: "m"
+      };
+  }
+};
+
+// Beautiful vector SVG component delivering sharp, high-fidelity standing pixel-art sprites
+const PixelSprite = ({ id }: { id: string }) => {
+  const spec = getPixelSpriteData(id);
+  const hair = spec.hair;
+  const skin = spec.skin;
+  const shirt = spec.shirt;
+  const pants = spec.pants;
+
+  return (
+    <div className="relative w-11 h-[68px] flex items-center justify-center select-none">
+      {/* Ground oval shadow */}
+      <div className="absolute bottom-[2px] left-1/2 -translate-x-1/2 w-[34px] h-[9px] bg-black/45 rounded-full filter blur-[0.6px] pointer-events-none z-0"></div>
+
+      <svg 
+        width="100%" 
+        height="100%" 
+        viewBox="0 0 16 24" 
+        className="rendering-pixelated z-10 animate-sprite-bob"
+        style={{ imageRendering: "pixelated" }}
+      >
+        {/* CROWN FOR CEO ("user") */}
+        {spec.hasCrown && (
+          <>
+            <rect x="5" y="1" width="6" height="1" fill="#fbbf24" />
+            <rect x="5" y="0" width="1" height="1" fill="#f59e0b" />
+            <rect x="7" y="0" width="2" height="1" fill="#f59e0b" />
+            <rect x="10" y="0" width="1" height="1" fill="#f59e0b" />
+            <rect x="5" y="1" width="1" height="1" fill="#ef4444" />
+            <rect x="10" y="1" width="1" height="1" fill="#3b82f6" />
+          </>
+        )}
+
+        {/* HAIR BASE BACKING */}
+        <rect x="5" y="4" width="6" height="3" fill={hair} />
+        <rect x="4" y="5" width="8" height="1.5" fill={hair} />
+
+        {/* HEAD SKIN BASE */}
+        <rect x="5" y="5.5" width="6" height="5" fill={skin} />
+
+        {/* Hair Front Bangs */}
+        <rect x="5" y="4.5" width="6" height="1" fill={hair} />
+        <rect x="4.5" y="5" width="1.5" height="1.5" fill={hair} />
+        <rect x="10" y="5" width="1.5" height="1.5" fill={hair} />
+
+        {/* EYES */}
+        <rect x="6" y="7.5" width="1" height="1" fill="#111827" />
+        <rect x="9" y="7.5" width="1" height="1" fill="#111827" />
+
+        {/* MOUTH / BLUSHES */}
+        <rect x="7.5" y="9.5" width="1" height="0.5" fill="#111827" />
+        <rect x="5.5" y="8.5" width="1" height="0.5" fill="#f43f5e" opacity="0.6" />
+        <rect x="9.5" y="8.5" width="1" height="0.5" fill="#f43f5e" opacity="0.6" />
+
+        {/* GENDER & ACCESORIES SPECIFICS */}
+        {spec.gender === "f" && (
+          <>
+            {/* Long strands */}
+            <rect x="4" y="6" width="1" height="5" fill={hair} />
+            <rect x="11" y="6" width="1" height="5" fill={hair} />
+            {spec.hasPigtails && (
+              <>
+                <rect x="2" y="7.5" width="2.5" height="2" fill={hair} />
+                <rect x="11.5" y="7.5" width="2.5" height="2" fill={hair} />
+              </>
+            )}
+            {spec.hasHairBow && (
+              <>
+                <rect x="7.5" y="3.5" width="1" height="1" fill="#ef4444" />
+                <rect x="6.5" y="3" width="1" height="1.5" fill="#ef4444" />
+                <rect x="8.5" y="3" width="1" height="1.5" fill="#ef4444" />
+              </>
+            )}
+          </>
+        )}
+
+        {spec.gender === "m" && (
+          <>
+            {spec.hasBeard && (
+              <rect x="5" y="10" width="6" height="1" fill={hair} />
+            )}
+            {spec.hasHeadphones && (
+              <>
+                {/* cyan headphones headband */}
+                <rect x="5" y="4" width="6" height="0.5" fill="#06b6d4" />
+                {/* cyan pads */}
+                <rect x="4" y="6" width="1" height="3" fill="#06b6d4" />
+                <rect x="11" y="6" width="1" height="3" fill="#06b6d4" />
+              </>
+            )}
+          </>
+        )}
+
+        {spec.hasGlasses && (
+          <>
+            <rect x="5" y="7" width="2.5" height="1" fill="rgba(34, 211, 238, 0.55)" />
+            <rect x="8.5" y="7" width="2.5" height="1" fill="rgba(34, 211, 238, 0.55)" />
+            <rect x="5" y="7" width="6" height="0.5" fill="#111827" />
+            <rect x="7.5" y="7.5" width="1" height="0.5" fill="#111827" />
+          </>
+        )}
+
+        {/* NECK */}
+        <rect x="7" y="10.5" width="2" height="1" fill={skin} />
+
+        {/* SHIRT & WORKWEAR */}
+        <rect x="5" y="11.5" width="6" height="5.5" fill={shirt} />
+        {/* SLEEVES */}
+        <rect x="4" y="11.5" width="1.1" height="4" fill={shirt} />
+        <rect x="10.9" y="11.5" width="1.1" height="4" fill={shirt} />
+
+        {/* TIE */}
+        {spec.hasTie && (
+          <>
+            <rect x="7.5" y="11.5" width="1" height="1" fill="#111827" />
+            <rect x="7.5" y="12.5" width="1" height="2.5" fill="#ef4444" />
+          </>
+        )}
+
+        {/* HANDS */}
+        <rect x="4" y="15.5" width="1" height="1" fill={skin} />
+        <rect x="11" y="15.5" width="1" height="1" fill={skin} />
+
+        {/* LEGS/TROUSERS/SKIRT */}
+        <rect x="5" y="17" width="6" height="4" fill={pants} />
+        {spec.gender === "f" ? (
+          <>
+            {/* Bare legs below skirt */}
+            <rect x="6" y="21" width="1" height="1" fill={skin} />
+            <rect x="9" y="21" width="1" height="1" fill={skin} />
+          </>
+        ) : (
+          <>
+            {/* split leg lines */}
+            <rect x="7.5" y="18" width="1" height="3" fill="#070a12" opacity="0.3" />
+          </>
+        )}
+
+        {/* SHOES */}
+        <rect x="5.5" y="21.5" width="1.8" height="1" fill="#1e293b" />
+        <rect x="8.7" y="21.5" width="1.8" height="1" fill="#1e293b" />
+        <rect x="5.3" y="22" width="2" height="0.5" fill="#090d16" />
+        <rect x="8.7" y="22" width="2" height="0.5" fill="#090d16" />
+      </svg>
+    </div>
+  );
+};
+
+// Repeating isometric-feeling tile textures definition for rooms
+const getRoomFloorStyle = (id: RoomId): React.CSSProperties => {
+  switch (id) {
+    case RoomId.LOBBY:
+      return {
+        backgroundImage: "repeating-conic-gradient(#eae4d9 0% 25%, #dfd7c5 0% 50%)",
+        backgroundSize: "14px 14px"
+      };
+    case RoomId.MEETING:
+      return {
+        backgroundImage: "repeating-conic-gradient(#2d2925 0% 25%, #201d1a 0% 50%)",
+        backgroundSize: "16px 16px"
+      };
+    case RoomId.FOCUS:
+      return {
+        backgroundImage: "repeating-conic-gradient(#15351c 0% 25%, #0d2413 0% 50%)",
+        backgroundSize: "14px 14px"
+      };
+    case RoomId.HELPDESK:
+      return {
+        backgroundImage: "repeating-conic-gradient(#3c271a 0% 25%, #2a1b12 0% 50%)",
+        backgroundSize: "16px 16px"
+      };
+    case RoomId.PANTRY:
+      return {
+        backgroundImage: "repeating-conic-gradient(#ea580c 0% 25%, #c2410c 0% 50%)",
+        backgroundSize: "12px 12px"
+      };
+    case RoomId.PROJECT:
+      return {
+        backgroundImage: "repeating-conic-gradient(#0c2a38 0% 25%, #071a24 0% 50%)",
+        backgroundSize: "16px 16px"
+      };
+    case RoomId.HR:
+      return {
+        backgroundImage: "repeating-conic-gradient(#3d1e63 0% 25%, #2a1347 0% 50%)",
+        backgroundSize: "14px 14px"
+      };
+    case RoomId.DEVAREA:
+      return {
+        backgroundImage: "repeating-conic-gradient(#132238 0% 25%, #0b1524 0% 50%)",
+        backgroundSize: "18px 18px"
+      };
+    default:
+      return {};
+  }
+};
+
 // Custom Room Theme Palette to match the screenshot look and feel
 const getRoomTheme = (id: RoomId) => {
   switch (id) {
     case RoomId.LOBBY:
       return {
-        bg: "from-[#291e14] to-[#1c130c]",
+        bg: "from-[#f4eedf] to-[#e7decb]",
         border: "border-[#4a3525]",
-        floorCode: "rgba(41, 30, 20, 0.9)",
+        textColor: "text-slate-800",
         decor: "🍂 Lobby & Reception Area"
       };
     case RoomId.MEETING:
       return {
-        bg: "from-[#1e2330] to-[#11151f]",
-        border: "border-[#353f56]",
-        floorCode: "rgba(30, 35, 48, 0.9)",
+        bg: "from-[#35312d] to-[#25221f]",
+        border: "border-[#554c41]",
+        textColor: "text-white",
         decor: "📊 Boardroom Standup"
       };
     case RoomId.FOCUS:
       return {
-        bg: "from-[#112415] to-[#08130a]",
-        border: "border-[#1d4529]",
-        floorCode: "rgba(17, 36, 21, 0.9)",
+        bg: "from-[#1d4529] to-[#0f2818]",
+        border: "border-[#2d6e3f]",
+        textColor: "text-white",
         decor: "📚 Silent Zone / Audits"
       };
     case RoomId.HELPDESK:
       return {
-        bg: "from-[#2e1d15] to-[#1c100a]",
-        border: "border-[#472a1e]",
-        floorCode: "rgba(46, 29, 21, 0.9)",
+        bg: "from-[#4a3225] to-[#2d1e16]",
+        border: "border-[#6b4731]",
+        textColor: "text-white",
         decor: "💁‍♀️ Assistance Desk"
       };
     case RoomId.PANTRY:
       return {
-        bg: "from-[#2c1d0f] to-[#1d1108]",
-        border: "border-[#4d3119]",
-        floorCode: "rgba(44, 29, 15, 0.9)",
+        bg: "from-[#ea580c] to-[#9a3412]",
+        border: "border-[#ea580c]",
+        textColor: "text-white",
         decor: "☕ Kitchen & Breakroom"
       };
     case RoomId.PROJECT:
       return {
-        bg: "from-[#0c242e] to-[#06151c]",
-        border: "border-[#143e4f]",
-        floorCode: "rgba(12, 36, 46, 0.9)",
+        bg: "from-[#143e4f] to-[#0c242e]",
+        border: "border-[#1e5c75]",
+        textColor: "text-white",
         decor: "📋 Kanban Agile Suite"
       };
     case RoomId.HR:
       return {
-        bg: "from-[#1f132c] to-[#120a1c]",
-        border: "border-[#36204f]",
-        floorCode: "rgba(31, 19, 44, 0.9)",
+        bg: "from-[#4c2480] to-[#2f1452]",
+        border: "border-[#733cb0]",
+        textColor: "text-white",
         decor: "💼 Welfare Station"
       };
     case RoomId.DEVAREA:
       return {
-        bg: "from-[#101e33] to-[#07111f]",
-        border: "border-[#1d385f]",
-        floorCode: "rgba(16, 30, 51, 0.9)",
+        bg: "from-[#1d385f] to-[#101e33]",
+        border: "border-[#2b558f]",
+        textColor: "text-white",
         decor: "⚙️ Dev & Rack Mainframe"
       };
   }
@@ -280,21 +599,19 @@ export default function OfficeMap({
                 key={room.id}
                 id={`room-tile-${room.id}`}
                 onClick={() => onRoomSelect(room.id)}
-                className={`absolute rounded-2xl border cursor-pointer transition-all duration-300 flex flex-col justify-between p-3 overflow-hidden text-left bg-gradient-to-br ${theme.bg} ${
+                className={`absolute rounded-2xl border-2 cursor-pointer transition-all duration-300 flex flex-col justify-between p-3.5 overflow-hidden text-left ${theme.textColor} ${theme.border} ${
                   isTargeted 
-                    ? "border-emerald-400 ring-2 ring-emerald-500/20 shadow-[0_0_35px_rgba(16,185,129,0.35)] scale-[1.02]" 
-                    : "border-slate-800/80 hover:border-slate-500 hover:scale-[1.01]"
+                    ? "border-emerald-400 ring-4 ring-emerald-500/25 shadow-[0_0_25px_rgba(16,185,129,0.3)] scale-[1.03]" 
+                    : "shadow-[inset_2px_2px_0px_rgba(255,255,255,0.08),_inset_-2px_-2px_0px_rgba(0,0,0,0.5),_4px_4px_0px_rgba(0,0,0,0.4)] hover:border-slate-450 hover:scale-[1.01]"
                 }`}
                 style={{
                   left: `${room.coordinates.x}%`,
                   top: `${room.coordinates.y}%`,
                   width: `${room.coordinates.width}%`,
                   height: `${room.coordinates.height}%`,
-                  transform: `translateZ(${isTargeted ? "14px" : "2px"})`,
+                  transform: `translateZ(${isTargeted ? "16px" : "3px"})`,
                   transformStyle: "preserve-3d",
-                  boxShadow: isTargeted 
-                    ? "0 25px 50px -10px rgba(16,185,129,0.25), inset 0 2px 4px rgba(255,255,255,0.05)" 
-                    : "0 10px 20px -5px rgba(0,0,0,0.6)"
+                  ...getRoomFloorStyle(room.id)
                 }}
               >
                 {/* Visual grid tile feeling inside each room */}
@@ -448,6 +765,7 @@ export default function OfficeMap({
               const topPercent = targetRoom.coordinates.y + (targetRoom.coordinates.height * (yOffset / 100));
 
               const hasMessage = !!recentDialogs[char.id];
+              const charZ = activeRoomId === targetRoom.id ? "24px" : "11px";
 
               return (
                 <motion.div
@@ -465,8 +783,8 @@ export default function OfficeMap({
                   className="absolute z-30 pointer-events-none"
                   style={{
                     transform: isIsometric 
-                      ? "translate(-50%, -50%) rotateZ(38deg) rotateX(-54deg)" 
-                      : "translate(-50%, -50%)",
+                      ? `translate(-50%, -50%) rotateZ(38deg) rotateX(-54deg) translateZ(${charZ})` 
+                      : `translate(-50%, -50%) translateZ(${charZ})`,
                     transformStyle: "preserve-3d",
                   }}
                 >
@@ -476,7 +794,7 @@ export default function OfficeMap({
                       initial={{ scale: 0, opacity: 0, y: 15 }}
                       animate={{ scale: 1, opacity: 1, y: 0 }}
                       exit={{ scale: 0, opacity: 0 }}
-                      className="absolute bottom-12 left-1/2 -translate-x-1/2 min-w-[140px] max-w-[180px] bg-white text-slate-900 border-2 border-slate-950 p-2 rounded-xl shadow-[3px_3px_0px_rgba(0,0,0,1)] flex flex-col gap-1 z-45 text-left pointer-events-auto"
+                      className="absolute bottom-[72px] left-1/2 -translate-x-1/2 min-w-[140px] max-w-[180px] bg-white text-slate-900 border-2 border-slate-950 p-2 rounded-xl shadow-[3px_3px_0px_rgba(0,0,0,1)] flex flex-col gap-1 z-45 text-left pointer-events-auto"
                       style={{ transformStyle: "preserve-3d", transform: "translateZ(20px)" }}
                     >
                       <div className="flex justify-between items-center bg-slate-100 px-1 py-0.5 rounded border border-slate-200 text-[8px] font-bold text-slate-800 uppercase tracking-widest leading-none">
@@ -501,24 +819,11 @@ export default function OfficeMap({
 
                     {/* Active Ping pulse ring for user ("You") */}
                     {char.id === "user" && (
-                      <span className="absolute inset-0 bg-emerald-400/20 rounded-full animate-ping border border-emerald-500/20"></span>
+                      <span className="absolute inset-x-0 -bottom-1 h-2 bg-emerald-400/25 blur-[1px] rounded-full animate-ping pointer-events-none"></span>
                     )}
 
-                    {/* Circle pixel style image avatar wrapper */}
-                    <div className={`relative w-10 h-10 rounded-full flex items-center justify-center bg-[#070a13] border-2 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] overflow-hidden select-none ${
-                      char.id === "user" 
-                        ? "border-emerald-400 animate-[bounce_3.2s_infinite]" 
-                        : char.status === "Coding"
-                        ? "border-cyan-400"
-                        : "border-slate-700"
-                    }`}>
-                      <img 
-                        src={char.avatarUrl} 
-                        alt={char.name} 
-                        className="w-full h-full object-cover scale-110 rendering-pixelated"
-                        referrerPolicy="no-referrer"
-                      />
-                    </div>
+                    {/* Beautiful custom pixel art sprite */}
+                    <PixelSprite id={char.id} />
                   </div>
                 </motion.div>
               );
