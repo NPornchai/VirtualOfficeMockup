@@ -1,0 +1,6 @@
+{
+  "name": "Virtual Office",
+  "description": "An interactive, isometric 2.5D virtual office simulation featuring an interactive layout, a dynamic mini-map, and AI-powered coworkers powered securely by server-side Gemini.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
