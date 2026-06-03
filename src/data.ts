@@ -1,85 +1,57 @@
 import { Room, RoomId, Character, OfficeTask, CalendarEvent } from "./types";
+// @ts-ignore
+import ceoSpriteImg from "./assets/images/ceo_sprite_1780479445026.png";
 
 export const OFFICE_ROOMS: Room[] = [
   {
     id: RoomId.LOBBY,
-    nameEn: "Lobby",
-    nameTh: "ล็อบบี้",
-    descriptionEn: "Main entrance. Grab directory updates here.",
-    descriptionTh: "ส่วนต้อนรับหลัก มีรายงานสรุปความเคลื่อนไหวล่าสุดของบริษัท",
+    nameEn: "CEO Room",
+    nameTh: "ห้อง CEO",
+    descriptionEn: "Private working space of CEO Pliew.",
+    descriptionTh: "ห้องทำงานของพี่ปลิว (CEO) ผู้คุมฟังก์ชันและยุทธศาสตร์หลักเชิงลึก",
     color: "bg-blue-500/10 border-blue-500/40 text-blue-400",
     bgGradient: "from-blue-950/20 to-indigo-950/20",
-    coordinates: { x: 2, y: 12, width: 26, height: 24 }
+    coordinates: { x: 5, y: 5, width: 42, height: 40 }
   },
   {
     id: RoomId.MEETING,
-    nameEn: "Meeting Room",
-    nameTh: "ห้องประชุม",
-    descriptionEn: "Standup, sprint planning, and group alignment.",
-    descriptionTh: "ห้องประชุมกลุ่ม ชวนพนักงานทั้ง 2 คนมาเปิดบอร์ดถกงานร่วมกัน",
-    color: "bg-amber-500/10 border-amber-500/40 text-amber-400",
-    bgGradient: "from-amber-950/20 to-orange-950/20",
-    coordinates: { x: 31, y: 2, width: 34, height: 24 }
-  },
-  {
-    id: RoomId.FOCUS,
-    nameEn: "Focus Room",
-    nameTh: "ห้องสมาธิ",
-    descriptionEn: "Quiet zone for deep thinking and strict code analysis.",
-    descriptionTh: "พื้นที่ส่วนตัวสำหรับทำงานสมาธิและตรวจสอบโค้ดจาก Somchai",
-    color: "bg-emerald-500/10 border-emerald-500/40 text-emerald-400",
-    bgGradient: "from-emerald-950/20 to-teal-950/20",
-    coordinates: { x: 68, y: 12, width: 28, height: 24 }
-  },
-  {
-    id: RoomId.HELPDESK,
-    nameEn: "Help Desk",
-    nameTh: "จุดฝากถามบอทช่วยเหลือ",
-    descriptionEn: "Report bugs or ask general operation questions.",
-    descriptionTh: "โต๊ะตอบคำถาม ให้บริการตอบคำปรึกษา แนะนำพนักงานใหม่",
-    color: "bg-rose-500/10 border-rose-500/40 text-rose-400",
-    bgGradient: "from-rose-950/20 to-pink-950/20",
-    coordinates: { x: 2, y: 39, width: 26, height: 24 }
+    nameEn: "SA Room",
+    nameTh: "ห้อง SA (System Analyst)",
+    descriptionEn: "System Architecture, design and joint sync standups with developers.",
+    descriptionTh: "ห้องวิเคราะห์และออกแบบระบบ ดำเนินวาระพัฒนาและประชุมสิงสถิตของทีมงานพัฒนา",
+    color: "bg-purple-500/10 border-purple-500/40 text-purple-400",
+    bgGradient: "from-purple-950/20 to-fuchsia-950/20",
+    coordinates: { x: 53, y: 5, width: 42, height: 40 }
   },
   {
     id: RoomId.PROJECT,
-    nameEn: "Project Room",
-    nameTh: "ห้องคุมโปรเจกต์",
-    descriptionEn: "Kanban board. Track active development pipelines.",
-    descriptionTh: "กระดานคุมงานและสรุปความก้าวหน้าโครงการของบริษัท",
-    color: "bg-purple-500/10 border-purple-500/40 text-purple-400",
-    bgGradient: "from-purple-950/20 to-fuchsia-950/20",
-    coordinates: { x: 31, y: 73, width: 34, height: 24 }
+    nameEn: "QA Room",
+    nameTh: "ห้อง QA (Quality Assurance)",
+    descriptionEn: "Sprint project tracking Kanban boards and code review checkpoints.",
+    descriptionTh: "ห้องจัดการตารางบอร์ด Kanban คุมโปรเจกต์ และตรวจสอบคุณภาพความปลอดภัยแอปพลิเคชัน",
+    color: "bg-cyan-500/10 border-cyan-500/40 text-cyan-400",
+    bgGradient: "from-cyan-950/20 to-sky-950/20",
+    coordinates: { x: 5, y: 52, width: 28, height: 43 }
   },
   {
-    id: RoomId.HR,
-    nameEn: "HR Office",
-    nameTh: "ห้องงานบุคคล",
-    descriptionEn: "Employee welfare, company policy updates.",
-    descriptionTh: "งานจัดแจงวันลา ค่าตอบแทน สวัสดิการพนักงาน และกิจกรรม",
-    color: "bg-violet-500/10 border-violet-500/40 text-violet-400",
-    bgGradient: "from-violet-950/20 to-indigo-950/20",
-    coordinates: { x: 68, y: 39, width: 28, height: 24 }
+    id: RoomId.HELPDESK,
+    nameEn: "Helper Bot Desk",
+    nameTh: "จุดฝากคำถามบอทช่วยเหลือ",
+    descriptionEn: "Help desk station populated by Momo context bot.",
+    descriptionTh: "โต๊ะช่วยเหลือหลัก ให้คำปรึกษาไขข้อสงสัยด่วนและสแตนด์บายตรวจบั๊กจากบอทโมโม่",
+    color: "bg-rose-500/10 border-rose-500/40 text-rose-400",
+    bgGradient: "from-rose-950/20 to-pink-950/20",
+    coordinates: { x: 36, y: 52, width: 28, height: 43 }
   },
   {
     id: RoomId.PANTRY,
     nameEn: "Pantry",
     nameTh: "ห้องกาแฟแพนทรี",
-    descriptionEn: "Interactive coffee machine and dev jokes.",
-    descriptionTh: "มุมพักผ่อน ชงกาแฟดริปจำลอง คุยเรื่องตลก และเล่นมินิเกม",
+    descriptionEn: "Modern pantry zone, drip assembly, and interactive developer trivia game.",
+    descriptionTh: "มุมพักผ่อน ชงกาแฟแก้วโปรดจำลอง คุยเรื่องตลกของโปรแกรมเมอร์ และตอบคำถามเกร็ดความรู้",
     color: "bg-orange-500/10 border-orange-500/40 text-orange-400",
     bgGradient: "from-amber-950/15 to-orange-950/15",
-    coordinates: { x: 2, y: 66, width: 26, height: 24 }
-  },
-  {
-    id: RoomId.DEVAREA,
-    nameEn: "Dev Area",
-    nameTh: "โซนเซิร์ฟเวอร์ & นักพัฒนา",
-    descriptionEn: "Where Wichai builds systems & tracks servers.",
-    descriptionTh: "พื้นที่โต๊ะทำงานของพี่ Wichai เซิร์ฟเวอร์แร็ค และศูนย์กลางทางเทคนิค",
-    color: "bg-cyan-500/10 border-cyan-500/40 text-cyan-400",
-    bgGradient: "from-cyan-950/20 to-sky-950/20",
-    coordinates: { x: 68, y: 66, width: 28, height: 24 }
+    coordinates: { x: 67, y: 52, width: 28, height: 43 }
   }
 ];
 
@@ -95,7 +67,7 @@ export const INITIAL_CHARACTERS: Character[] = [
     status: "Online",
     statusColor: "bg-green-500",
     isAi: false,
-    avatarUrl: "https://api.dicebear.com/7.x/pixel-art/svg?seed=pliew&backgroundColor=b6e3f4",
+    avatarUrl: ceoSpriteImg,
     greetingTh: "สวัสดีทุกคน ยินดีต้อนรับสู่ออฟฟิศพิกเซล วันนี้โมโม่ ไบท์ และมีนา สแตนด์บายพร้อมร่วมงานกับพี่ปลิวแล้วครับ!",
     greetingEn: "Hello everyone, welcome back to the pixel office. Momo, Byte, and Mina are ready to build together today!"
   },
@@ -106,7 +78,7 @@ export const INITIAL_CHARACTERS: Character[] = [
     role: "Senior Developer",
     roleTh: "โปรแกรมเมอร์อาวุโส",
     avatar: "💻",
-    currentRoom: RoomId.DEVAREA,
+    currentRoom: RoomId.MEETING,
     status: "Coding",
     statusColor: "bg-cyan-400",
     isAi: true,
@@ -121,7 +93,7 @@ export const INITIAL_CHARACTERS: Character[] = [
     role: "Code Reviewer",
     roleTh: "ผู้ตรวจสอบโค้ด",
     avatar: "📝",
-    currentRoom: RoomId.FOCUS,
+    currentRoom: RoomId.PROJECT,
     status: "Coding",
     statusColor: "bg-indigo-400",
     isAi: true,

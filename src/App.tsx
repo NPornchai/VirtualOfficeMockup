@@ -42,18 +42,18 @@ export default function App() {
     {
       id: "init-1",
       senderId: "code-reviewer",
-      senderName: "Frank (DevOps & Security)",
-      senderAvatar: "https://api.dicebear.com/7.x/pixel-art/svg?seed=frank&backgroundColor=c0aede",
-      text: "ยินดีต้อนรับครับคุณ CEO! ส่งส่วนประกอบโค้ดตัวอย่างมาแชร์หน้าจอเพื่อรัน Code Audit (Focus Room) ได้ตลอดเลยนะครับ",
+      senderName: "Mina (Code Reviewer)",
+      senderAvatar: "https://api.dicebear.com/7.x/pixel-art/svg?seed=mina&backgroundColor=ffd5dc",
+      text: "สวัสดีค่ะคุณปลิว! มีโค้ดส่วนไหนอยากให้มีนาช่วยรีวิวเรื่องคุณภาพและตรวจสอบคุณภาพ (QA Room) ส่งแชทหามีนาได้ตลอดเลยนะคะ",
       timestamp: "09:05",
       channel: "code-reviewer"
     },
     {
       id: "init-2",
       senderId: "senior-dev",
-      senderName: "Bob (Senior Developer)",
-      senderAvatar: "https://api.dicebear.com/7.x/pixel-art/svg?seed=bob&backgroundColor=c0aede",
-      text: "หวัดดีครับหัวหน้า! พร้อมอัพเดทตารางงานและแก้บั๊กรีแอกทีฟแล้ว แชทถามงานผมตัวต่อตัวได้ที่โซนพัฒนา (Dev Area) นะครับผม",
+      senderName: "Byte (Senior Developer)",
+      senderAvatar: "https://api.dicebear.com/7.x/pixel-art/svg?seed=byte&backgroundColor=c0aede",
+      text: "หวัดดีครับพี่ปลิว! สแตนด์บายพร้อมออกแบบระบบและเขียนโค้ดหลังบ้านอย่างเต็มกำลังครับ ทักแชทคุยกับผมที่ห้องวิเคราะห์ระบบ (SA Room) ได้เสมอนะครับ",
       timestamp: "09:06",
       channel: "senior-dev"
     },
@@ -62,7 +62,7 @@ export default function App() {
       senderId: "system",
       senderName: "System",
       senderAvatar: "",
-      text: "ระบบจำลอง Virtual Office เชื่อมต่อกำลังพล 12 พิกัด เรียบร้อยแล้ว ยินดีต้อนรับบอส",
+      text: "ระบบจำลอง Virtual Office เชื่อมสิทธิสำเร็จ พร้อมทำงานร่วมกันกับพี่ปลิวและผู้ช่วยแล้ว",
       timestamp: "09:04",
       channel: "group"
     }
@@ -72,10 +72,15 @@ export default function App() {
   const [events, setEvents] = useState<CalendarEvent[]>(CALENDAR_EVENTS);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   
+  // Tab states for consolidated rooms
+  const [saRoomTab, setSaRoomTab] = useState<"group" | "byte">("group");
+  const [qaRoomTab, setQaRoomTab] = useState<"kanban" | "mina">("kanban");
+  const [helpBotTab, setHelpBotTab] = useState<"momo" | "screenshare">("momo");
+  
   // Custom dialogs floating over characters on the isometric map
   const [recentDialogs, setRecentDialogs] = useState<Record<string, string>>({
-    "code-reviewer": "เช็ค Type Safety เสมอฮะ",
-    "senior-dev": "ดริปกาแฟเข้มๆ สักแก้วบอส!"
+    "code-reviewer": "เช็ค Type Safety เสมอนะคะ",
+    "senior-dev": "ดริปกาแฟก่อนลุยเขียนโค้ดครับ!"
   });
 
   // Footer popup states
@@ -328,7 +333,7 @@ export default function App() {
       title,
       time,
       room,
-      attendees: ["You", "Wichai", "Somchai"],
+      attendees: ["You", "Byte", "Mina"],
       description: desc
     };
     setEvents(prev => [...prev, newEvent]);
@@ -488,11 +493,11 @@ export default function App() {
 
             <ul className="grid grid-cols-1 gap-1.5 font-sans">
               {[
-                { id: RoomId.LOBBY, label: "Lobby", icon: "🏠", iconBg: "bg-amber-500/10 border-amber-500/25 text-amber-400" },
-                { id: RoomId.MEETING, label: "Meeting Room", icon: "👥", iconBg: "bg-blue-500/10 border-blue-500/25 text-blue-400" },
-                { id: RoomId.FOCUS, label: "Focus Room", icon: "🧠", iconBg: "bg-purple-500/10 border-purple-500/25 text-purple-400" },
-                { id: RoomId.PANTRY, label: "Pantry", icon: "☕", iconBg: "bg-emerald-500/10 border-emerald-500/25 text-emerald-400" },
-                { id: RoomId.HELPDESK, label: "Help Desk", icon: "🚨", iconBg: "bg-rose-500/10 border-rose-500/25 text-rose-450 text-[#f43f5e]" },
+                { id: RoomId.LOBBY, label: "CEO Room", icon: "👑", iconBg: "bg-blue-500/10 border-blue-500/25 text-blue-400" },
+                { id: RoomId.MEETING, label: "SA Room (Meeting)", icon: "💻", iconBg: "bg-purple-500/10 border-purple-500/25 text-purple-400" },
+                { id: RoomId.PROJECT, label: "QA Room (Kanban)", icon: "📋", iconBg: "bg-cyan-500/10 border-cyan-500/25 text-cyan-400" },
+                { id: RoomId.HELPDESK, label: "Helper Desk", icon: "🤖", iconBg: "bg-rose-500/10 border-rose-500/25 text-rose-400" },
+                { id: RoomId.PANTRY, label: "Pantry Room", icon: "☕", iconBg: "bg-amber-500/10 border-amber-500/25 text-amber-400" },
               ].map(item => {
                 const isSelected = activeRoomId === item.id;
                 return (
@@ -573,21 +578,22 @@ export default function App() {
           {/* Symmetrical Room Widgets container (Loads below map) */}
           <div className="transition-all duration-300 relative z-10">
             {activeRoomId === RoomId.LOBBY && (
-              <div className="bg-[#0c111d] border border-[#1e2a47] rounded-3xl p-6 shadow-xl flex gap-5 flex-col md:flex-row items-center justify-between">
+              <div className="bg-[#0c111d] border border-[#1e2a47] rounded-3xl p-6 shadow-xl flex gap-5 flex-col md:flex-row items-center justify-between text-left">
                 <div className="flex-1">
-                  <span className="bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[9px] font-bold px-2 py-0.5 rounded uppercase font-mono tracking-widest">Welcome Desk</span>
+                  <span className="bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[9px] font-bold px-2 py-0.5 rounded uppercase font-mono tracking-widest">CEO Strategic Command</span>
                   <h2 className="text-sm font-extrabold text-white mt-1.5 mb-1 flex items-center gap-1.5 font-display">
-                    🚪 ประตูต้อนรับสำนักงาน (Lobby Front Desk)
+                    🚪 ห้องทำงานประธานเจ้าหน้าที่บริหาร (CEO Room)
                   </h2>
-                  <p className="text-xs text-gray-400 leading-relaxed leading-normal">
-                    ยินดีต้อนรับกลับเข้าสู่ระบบ Virtual Office Sandbox ครับท่านประธาน ขณะนี้พนักงานทั้ง 11 ท่านสแตนด์บายทำงานบนคอร์ออฟฟิศเสรีแล้ว คุณสามารถเดินย้ายพิกัดเพื่อจัดแจงงาน ดริปกาแฟแข่งขันใน Pantry หรืออภิปรายกับทีมงานได้อย่างปลอดภัย!
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    ยินดีต้อนรับกลับเข้าสู่ระบบสำนักงานจำลองครับท่านประธานปลิว ขณะนี้กำลังพลคุณภาพทั้ง 3 ท่าน (ไบท์ - SA, มีนา - QA, โมโม่ - บอทมัสคอต) สแตนด์บายทำงานเสถียรรอบด้านแล้ว คุณสามารถย้ายตัวตำแหน่งไปดริปกาแฟแข่งขันในครัวแพนทรี อัพเดตงานบอร์ดโครงการ หรือปรึกษาระบบงานกับผู้เชี่ยวชาญได้โดยตรงทุกพิกัดเลยครับ!
                   </p>
                   
                   {/* General welcome news log board */}
                   <div className="bg-[#05080f] p-3.5 rounded-xl border border-slate-800 mt-4 font-mono text-[10px] text-gray-500 leading-relaxed">
-                    <strong className="text-gray-300 block mb-1 font-bold">📢 กระดานประกาศรอบเช้า:</strong>
-                    - ☕ เมล็ดกาแฟดิปเอธิโอเปียบลูเบลนด์มาใหม่ที่ครัวแพนทรี ท้าชิงสตรีคความว่องไวได้ในคอฟฟี่เกมส์วันนี้<br/>
-                    - 📝 Frank ตรวจสอบสกรีนซีเคียวระบบ JWT Token คลุมไว้ พิกัดพร้อมผ่านพอร์ต 3000 ได้ไร้กังวล
+                    <strong className="text-gray-300 block mb-1 font-bold">📢 บันทึกสถานะโครงการ:</strong>
+                    - 💻 **ไบท์ (Senior-Dev/SA)**: ประจำการอยู่ที่ **SA Room (Meeting Room)** พร้อมรับคำสั่งเขียนโมดูลโค้ดและดีไซน์ API<br/>
+                    - 📝 **มีนา (Code-Reviewer/QA)**: ประจำการอยู่ที่ **QA Room (Project Room)** คอยตรวจความปลอดภัยและอัปเดตบอร์ด Kanban<br/>
+                    - 🤖 **โมโม่ (Helper-Bot)**: ประจำการที่ **Helper Desk** บอทสุดน่ารักคอยตอบคำถามและช่วยเหลือเรื่องความรู้ทั่วไป
                   </div>
                 </div>
 
@@ -595,10 +601,10 @@ export default function App() {
                   <button
                     id="btn-lobby-standup"
                     onClick={() => handleRoomSelect(RoomId.MEETING)}
-                    className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer animate-pulse"
+                    className="px-4 py-2 bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer animate-pulse"
                   >
                     <Plus className="w-4 h-4" />
-                    <span>ชวนเปิดประชุม Standup</span>
+                    <span>เข้าห้อง SA สนทนา/ประชุมทีม</span>
                   </button>
                   <button
                     id="btn-lobby-coffee"
@@ -613,108 +619,160 @@ export default function App() {
             )}
 
             {activeRoomId === RoomId.MEETING && (
-              <ChatPanel 
-                characters={characters}
-                messages={messages}
-                activeChannel="group"
-                onSendMessage={handleSendMessage}
-                isGenerating={isGenerating}
-                onClearHistory={(chan) => setMessages(prev => prev.filter(m => m.channel !== chan))}
-                triggerVoiceSynthesis={triggerVoiceSynthesis}
-              />
-            )}
+              <div className="animate-[fadeIn_0.3s_ease-out] flex flex-col gap-4 text-left">
+                {/* Custom room header tabs */}
+                <div className="flex gap-2 border-b border-slate-800 pb-2">
+                  <button
+                    onClick={() => setSaRoomTab("group")}
+                    className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
+                      saRoomTab === "group"
+                        ? "bg-[#7c3aed] text-white border-[#9061f9]"
+                        : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"
+                    }`}
+                  >
+                    🤝 ประชุมทีมกลุ่ม (Joint Spirit Standup)
+                  </button>
+                  <button
+                    onClick={() => setSaRoomTab("byte")}
+                    className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
+                      saRoomTab === "byte"
+                        ? "bg-cyan-500 text-slate-950 border-cyan-400"
+                        : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"
+                    }`}
+                  >
+                    💬 แชทส่วนตัวกับ พี่ไบท์ (Senior-Dev / SA)
+                  </button>
+                </div>
 
-            {activeRoomId === RoomId.FOCUS && (
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-5 animate-[fadeIn_0.3s_ease-out]">
-                <div className="md:col-span-8">
+                {saRoomTab === "group" ? (
                   <ChatPanel 
                     characters={characters}
                     messages={messages}
-                    activeChannel="code-reviewer"
+                    activeChannel="group"
                     onSendMessage={handleSendMessage}
                     isGenerating={isGenerating}
                     onClearHistory={(chan) => setMessages(prev => prev.filter(m => m.channel !== chan))}
                     triggerVoiceSynthesis={triggerVoiceSynthesis}
                   />
-                </div>
-                <div className="md:col-span-4 bg-[#0a0f1d] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
-                  <div>
-                    <span className="text-[9px] font-mono font-bold text-[#2b96ff] uppercase tracking-widest block mb-1">Architecture Reviews</span>
-                    <h3 className="text-xs font-bold text-white mb-2 font-display">ระบบรีวิวคุณภาพโค้ดสากล (Clean Code)</h3>
-                    <ul className="space-y-2 text-[10px] leading-normal text-gray-400">
-                      <li className="flex items-start gap-1 p-1.5 bg-gray-950/40 rounded border border-gray-900">
-                        <span className="text-emerald-400 font-mono font-bold">1.</span>
-                        <span>ใช้ Type Safety หลีกเลี่ยง Any เสมอเพื่อรักษาโครงสร้างโมดูลาร์</span>
-                      </li>
-                      <li className="flex items-start gap-1 p-1.5 bg-gray-950/40 rounded border border-gray-900">
-                        <span className="text-emerald-400 font-mono font-bold">2.</span>
-                        <span>เช็ค Dependencies ใน useEffect เสมอ ป้องกัน infinite rendering loops</span>
-                      </li>
-                      <li className="flex items-start gap-1 p-1.5 bg-gray-950/40 rounded border border-gray-900">
-                        <span className="text-emerald-400 font-mono font-bold">3.</span>
-                        <span>คัสตอม Component แยกสับไฟล์ ช่วยบริหารจัดการ Token ทรัพยากรแอปพลิเคชันอย่างประหยัด</span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="mt-4 bg-[#111827] p-3 rounded-xl text-[10px] text-gray-500 italic font-mono">
-                    "ระบบมีเสถียรภาพเริ่มต้นจากความละเอียดลออในการเขียนเทสครับประธาน" - แฟร็งค์ (Frank) DevOps AI
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeRoomId === RoomId.DEVAREA && (
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-5 animate-[fadeIn_0.3s_ease-out]">
-                <div className="md:col-span-8">
-                  <ChatPanel 
-                    characters={characters}
-                    messages={messages}
-                    activeChannel="senior-dev"
-                    onSendMessage={handleSendMessage}
-                    isGenerating={isGenerating}
-                    onClearHistory={(chan) => setMessages(prev => prev.filter(m => m.channel !== chan))}
-                    triggerVoiceSynthesis={triggerVoiceSynthesis}
-                  />
-                </div>
-                <div className="md:col-span-4 bg-[#0a111a] border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-md">
-                  <div>
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="text-[9px] font-mono text-cyan-400 uppercase font-black tracking-widest">Active Server Rack Status</span>
-                      <span className="w-2 h-2 rounded-full bg-green-500 animate-ping"></span>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+                    <div className="md:col-span-8">
+                      <ChatPanel 
+                        characters={characters}
+                        messages={messages}
+                        activeChannel="senior-dev"
+                        onSendMessage={handleSendMessage}
+                        isGenerating={isGenerating}
+                        onClearHistory={(chan) => setMessages(prev => prev.filter(m => m.channel !== chan))}
+                        triggerVoiceSynthesis={triggerVoiceSynthesis}
+                      />
                     </div>
+                    <div className="md:col-span-4 bg-[#0a111a] border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-md">
+                      <div>
+                        <div className="flex justify-between items-center mb-3">
+                          <span className="text-[9px] font-mono text-cyan-400 uppercase font-black tracking-widest">Active Server Rack Status</span>
+                          <span className="w-2 h-2 rounded-full bg-green-500 animate-ping"></span>
+                        </div>
 
-                    <div className="space-y-3 font-mono text-[10px]">
-                      <div className="p-2 border border-gray-900 bg-gray-950/60 rounded flex justify-between">
-                        <span className="text-gray-400">Main Container (Cloud Run):</span>
-                        <strong className="text-emerald-400 font-black">Healthy</strong>
+                        <div className="space-y-3 font-mono text-[10px]">
+                          <div className="p-2 border border-gray-900 bg-gray-950/60 rounded flex justify-between">
+                            <span className="text-gray-400">Main Container (Cloud Run):</span>
+                            <strong className="text-emerald-400 font-black">Healthy</strong>
+                          </div>
+                          <div className="p-2 border border-gray-900 bg-gray-950/60 rounded flex justify-between">
+                            <span className="text-gray-400">Sandbox Client Port:</span>
+                            <strong className="text-cyan-400 font-bold">Port 3000 Ingress</strong>
+                          </div>
+                          <div className="p-2 border border-gray-900 bg-gray-950/60 rounded flex justify-between">
+                            <span className="text-gray-450">Gemini LLM Pipeline:</span>
+                            <strong className="text-indigo-400 font-semibold">Ready (API)</strong>
+                          </div>
+                        </div>
                       </div>
-                      <div className="p-2 border border-gray-900 bg-gray-950/60 rounded flex justify-between">
-                        <span className="text-gray-400">Sandbox Client Port:</span>
-                        <strong className="text-cyan-400 font-bold">Port 3000 Ingress</strong>
-                      </div>
-                      <div className="p-2 border border-gray-900 bg-gray-950/60 rounded flex justify-between">
-                        <span className="text-gray-450">Gemini LLM Pipeline v2:</span>
-                        <strong className="text-indigo-400 font-semibold">Ready (API)</strong>
+
+                      <div className="mt-4 text-[9px] text-[#8ea7c5] leading-normal pl-1.5 border-l-2 border-orange-500/40 text-gray-500 font-mono">
+                        "งานสถาปัตยกรรมระบบออกแบบพร้อมลุยเลยครับพี่ปลิว สั่งรันเน็ตเวิร์กเชื่อมคีย์ได้ปลอดภัยและรวดเร็วเลยฮะบอส" - ไบท์ (Byte) SA AI
                       </div>
                     </div>
                   </div>
-
-                  <div className="mt-4 text-[9px] text-[#8ea7c5] leading-normal pl-1.5 border-l-2 border-orange-500/40 text-gray-500 font-mono">
-                    "หลังบ้านและพร็อกซี่ API พร้อมเขียนคำส่งฟังก์ชันคอลล์สตรีมมิ่งเลยฮะบอส" - บ็อบ (Bob) ซีเนียร์โปรแกรมเมอร์ AI
-                  </div>
-                </div>
+                )}
               </div>
             )}
 
             {activeRoomId === RoomId.PROJECT && (
-              <TaskBoard 
-                tasks={tasks}
-                characters={characters}
-                onAddTask={handleAddTask}
-                onUpdateTaskStatus={handleUpdateTaskStatus}
-                onDeleteTask={handleDeleteTask}
-              />
+              <div className="animate-[fadeIn_0.3s_ease-out] flex flex-col gap-4 text-left">
+                {/* Custom room header tabs */}
+                <div className="flex gap-2 border-b border-slate-800 pb-2">
+                  <button
+                    onClick={() => setQaRoomTab("kanban")}
+                    className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
+                      qaRoomTab === "kanban"
+                        ? "bg-cyan-500 text-slate-950 border-cyan-400"
+                        : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"
+                    }`}
+                  >
+                    📋 บอร์ดโครงการ (Sprint Kanban Board)
+                  </button>
+                  <button
+                    onClick={() => setQaRoomTab("mina")}
+                    className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
+                      qaRoomTab === "mina"
+                        ? "bg-[#7c3aed] text-white border-[#9061f9]"
+                        : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"
+                    }`}
+                  >
+                    📝 ตรวจริวิวตรวจสอบโค้ด (QA Review Chat with Mina)
+                  </button>
+                </div>
+
+                {qaRoomTab === "kanban" ? (
+                  <TaskBoard 
+                    tasks={tasks}
+                    characters={characters}
+                    onAddTask={handleAddTask}
+                    onUpdateTaskStatus={handleUpdateTaskStatus}
+                    onDeleteTask={handleDeleteTask}
+                  />
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+                    <div className="md:col-span-8">
+                      <ChatPanel 
+                        characters={characters}
+                        messages={messages}
+                        activeChannel="code-reviewer"
+                        onSendMessage={handleSendMessage}
+                        isGenerating={isGenerating}
+                        onClearHistory={(chan) => setMessages(prev => prev.filter(m => m.channel !== chan))}
+                        triggerVoiceSynthesis={triggerVoiceSynthesis}
+                      />
+                    </div>
+                    <div className="md:col-span-4 bg-[#0a0f1d] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+                      <div>
+                        <span className="text-[9px] font-mono font-bold text-[#2b96ff] uppercase tracking-widest block mb-1">Architecture Reviews</span>
+                        <h3 className="text-xs font-bold text-white mb-2 font-display">ระบบรีวิวคุณภาพโค้ดสากล (Clean Code)</h3>
+                        <ul className="space-y-2 text-[10px] leading-normal text-gray-400">
+                          <li className="flex items-start gap-1 p-1.5 bg-gray-950/40 rounded border border-gray-900">
+                            <span className="text-emerald-400 font-mono font-bold">1.</span>
+                            <span>ใช้ Type Safety หลีกเลี่ยง any และตรวจสอบ schema อย่างระมัดระวังเพื่อความเสถียร</span>
+                          </li>
+                          <li className="flex items-start gap-1 p-1.5 bg-gray-950/40 rounded border border-gray-900">
+                            <span className="text-emerald-400 font-mono font-bold">2.</span>
+                            <span>เช็ด dependencies ใน useEffect เสมอกันเกิด cyclic loops</span>
+                          </li>
+                          <li className="flex items-start gap-1 p-1.5 bg-gray-950/40 rounded border border-gray-900">
+                            <span className="text-emerald-400 font-mono font-bold">3.</span>
+                            <span>การคุมโครงสร้างห้องให้มีความกระชับ ช่วยประหยัด Token และโหลดภาพได้ไวสุด</span>
+                          </li>
+                        </ul>
+                      </div>
+
+                      <div className="mt-4 bg-[#111827] p-3 rounded-xl text-[10px] text-gray-500 italic font-mono">
+                        "งานควบคุมกระดานงานอัปเดตและตรวจบั๊กรีแอกทีฟ มีนาดูแลให้อย่างเคร่งครัดค่ะ" - มีนา (Mina) QA Analyst AI
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
 
             {activeRoomId === RoomId.PANTRY && (
@@ -722,60 +780,81 @@ export default function App() {
             )}
 
             {activeRoomId === RoomId.HELPDESK && (
-              <div className="bg-[#0c111d] border border-slate-800 rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col md:flex-row gap-5 items-center select-none animate-[fadeIn_0.4s_ease]">
-                <div className="flex-1 text-left">
-                  <span className="px-2.5 py-0.5 bg-rose-500/15 border border-rose-500/25 text-[#f43f5e] text-[9px] font-extrabold uppercase rounded font-mono tracking-widest">Help Center Portal</span>
-                  <h2 className="text-sm font-extrabold text-white tracking-wide mt-2 mb-1 flex items-center gap-1.5 font-display">
-                    🚨 จุดตอบปัญหาฝ่ายช่วยเหลือ (Help Desk Station)
-                  </h2>
-                  <p className="text-xs text-gray-400 leading-relaxed mb-4 leading-normal">
-                    พบปัญหาติดบั๊ก API, อยากวิเคราะห์ความลึกของฐานข้อมูล หรือต้องการรีวิวโค้ดระบบความปลอดภัยหรือไม่? คุณสามารถพิมพ์คำขอแชร์สกรีนด้านล่างเพื่ออัพเดตและแก้ปัญหาเร่งด่วนร่วมกันได้ทันทีครับบอส!
-                  </p>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-                    <div className="p-3 bg-[#070b13] border border-slate-800 rounded-xl">
-                      <strong className="text-xs text-indigo-400 block mb-0.5 font-mono font-bold">Frank (DevOps):</strong>
-                      <span className="text-[10px] text-gray-500 leading-normal block leading-normal">
-                        เชี่ยวชาญการตั้งค่าความลับ .env, การทำ Screen Code Auditing และสแกนช่องโหว่ความเสถียร
-                      </span>
-                    </div>
-
-                    <div className="p-3 bg-[#070b13] border border-slate-800 rounded-xl">
-                      <strong className="text-xs text-cyan-400 block mb-0.5 font-mono font-bold">Bob (Developer):</strong>
-                      <span className="text-[10px] text-gray-500 leading-normal block leading-normal">
-                        เชี่ยวชาญการสร้าง Responsive views, ยูสเฮดเลส UI, และอัพเกรดฟีเจอร์พอร์ต 3000
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="w-full md:w-auto flex-shrink-0 flex flex-col gap-2">
+              <div className="animate-[fadeIn_0.3s_ease-out] flex flex-col gap-4 text-left">
+                {/* Custom room header tabs */}
+                <div className="flex gap-2 border-b border-slate-800 pb-2">
                   <button
-                    id="btn-guide-screen"
-                    onClick={() => setFooterActiveTab("screenshare")}
-                    className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-md cursor-pointer"
+                    onClick={() => setHelpBotTab("momo")}
+                    className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
+                      helpBotTab === "momo"
+                        ? "bg-[#e11d48] text-white border-[#f43f5e]"
+                        : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"
+                    }`}
                   >
-                    <Tv className="w-4 h-4 animate-bounce" />
-                    <span>แชร์เน็ตเวิร์คเพื่อตรวจสอบ</span>
+                    🤖 ตู้อินเตอร์แอคทีฟตอบโต้ (Momo Bot Chat)
+                  </button>
+                  <button
+                    onClick={() => setHelpBotTab("screenshare")}
+                    className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
+                      helpBotTab === "screenshare"
+                        ? "bg-[#7c3aed] text-white border-[#9061f9]"
+                        : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"
+                    }`}
+                  >
+                    🚨 พอร์ทัลติดต่อ & ตัวเชื่อมทดสอบเครือข่าย
                   </button>
                 </div>
-              </div>
-            )}
 
-            {activeRoomId === RoomId.HR && (
-              <div className="bg-[#0c111d] border border-slate-800 rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col items-center text-center p-8 max-w-2xl mx-auto select-none animate-[fadeIn_0.4s_ease]">
-                <span className="text-sm">🍀</span>
-                <h3 className="text-xs font-mono text-purple-400 uppercase font-black tracking-widest mt-1">HR Employee Welfare</h3>
-                <h2 className="text-base font-extrabold text-white my-1.5 font-display">ห้องงานจัดสวัสดิการพนักงาน (HR Office Hub)</h2>
-                <p className="text-xs text-gray-400 leading-relaxed max-w-md">
-                  ยินดีต้อนรับสู่แดนการจัดการทรัพยากรบุคคล ฝ่ายเคที่รายงานพนักงานทุกคนทำงานร่วมกันอย่างขันแข็ง ค่าความสุขเต็มร้อย พร้อมให้บริการอำนวยความสะดวกประธานบริหารตลอดช่วงการรีวิวผลงาน!
-                </p>
+                {helpBotTab === "momo" ? (
+                  <ChatPanel 
+                    characters={characters}
+                    messages={messages}
+                    activeChannel="helper-bot"
+                    onSendMessage={handleSendMessage}
+                    isGenerating={isGenerating}
+                    onClearHistory={(chan) => setMessages(prev => prev.filter(m => m.channel !== chan))}
+                    triggerVoiceSynthesis={triggerVoiceSynthesis}
+                  />
+                ) : (
+                  <div className="bg-[#0c111d] border border-slate-800 rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col md:flex-row gap-5 items-center select-none">
+                    <div className="flex-1">
+                      <span className="px-2.5 py-0.5 bg-rose-500/15 border border-rose-500/25 text-[#f43f5e] text-[9px] font-extrabold uppercase rounded font-mono tracking-widest">Help Center Portal</span>
+                      <h2 className="text-sm font-extrabold text-white tracking-wide mt-2 mb-1 flex items-center gap-1.5 font-display">
+                        🚨 จุดตอบปัญหาฝ่ายช่วยเหลือ (Help Desk Station)
+                      </h2>
+                      <p className="text-xs text-gray-400 leading-relaxed mb-4 leading-normal">
+                        พบปัญหาตัวจำลองหรือต้องการรีวิวเครือข่ายความปลอดภัยใช่ไหมครับ? พิมพ์เพื่อโต้ตอบถามทั่วไปกับน้องบอทมัสคอต โมโม่ (Momo) ได้อย่างเป็นกันเอง หรือจะกดคลิกปุ่มเชื่อมแชร์สกรีนรีวิวของบริษัทได้ทันทีตรงนี้เลยค๊าบ!
+                      </p>
 
-                <div className="flex gap-4 mt-5 text-[10px] text-gray-500 font-mono bg-[#05080f] px-3.5 py-1.5 border border-slate-800 rounded-xl">
-                  <span>🏖️ วันลาเฉลี่ย: 14 วัน</span>
-                  <span>⚡ ความพึงพอใจ: 100%</span>
-                  <span>🏆 ประสิทธิภาพคอร์: ดีรวม</span>
-                </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                        <div className="p-3 bg-[#070b13] border border-slate-800 rounded-xl">
+                          <strong className="text-xs text-[#9061f9] block mb-0.5 font-mono font-bold">Mina (Code Reviewer / QA):</strong>
+                          <span className="text-[10px] text-gray-500 leading-normal block">
+                            ดูแลความคลีนของบล็อกโค้ดแอปพลิเคชัน ค้นหาบั๊กและส่อง memory loops ประจำการที่ห้อง QA
+                          </span>
+                        </div>
+
+                        <div className="p-3 bg-[#070b13] border border-slate-800 rounded-xl">
+                          <strong className="text-xs text-cyan-400 block mb-0.5 font-mono font-bold">Byte (Senior Dev / SA):</strong>
+                          <span className="text-[10px] text-gray-500 leading-normal block">
+                            ดูแลเซิร์ฟเวอร์หลัก รันไทม์พอร์ท 3000 และโมดูลหลังบ้าน ประจำการที่ห้อง SA
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="w-full md:w-auto flex-shrink-0 flex flex-col gap-2">
+                      <button
+                        id="btn-guide-screen"
+                        onClick={() => setFooterActiveTab("screenshare")}
+                        className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-md cursor-pointer"
+                      >
+                        <Tv className="w-4 h-4 animate-bounce" />
+                        <span>แชร์เน็ตเวิร์คเพื่อตรวจสอบ</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -868,12 +947,12 @@ export default function App() {
                       <div className="flex gap-2 mb-2 text-left">
                         <span className="text-xl">🔧</span>
                         <div>
-                          <strong className="text-xs font-bold text-white block leading-none text-left">Frank (DevOps)</strong>
-                          <span className="text-[8px] font-mono text-indigo-400 font-bold uppercase mt-1 block">Security & Screen Auditor AI</span>
+                          <strong className="text-xs font-bold text-white block leading-none text-left">Mina (QA & Reviewer)</strong>
+                          <span className="text-[8px] font-mono text-indigo-400 font-bold uppercase mt-1 block">Security & Code Auditor AI</span>
                         </div>
                       </div>
                       <p className="text-[10px] text-slate-500 leading-normal text-left">
-                        ดูแลการรันแอปพอร์ต 3000 คลุมสกรีนแชร์ จัดการ Hook checks และคัดกรอง dependencies สังเคราะห์วิจัยร่วมกับโมเดล Gemini
+                        ดูแลคุณภาพความเสถียรของแอป ค้นหาช่องโหว่ความเสถียร จัดการ Hook checks สังเคราะห์วิจัยร่วมกับโมเดล Gemini
                       </p>
                     </div>
 
@@ -881,12 +960,12 @@ export default function App() {
                       <div className="flex gap-2 mb-2 text-left">
                         <span className="text-xl">💻</span>
                         <div>
-                          <strong className="text-xs font-bold text-white block leading-none text-left">Bob (Developer)</strong>
-                          <span className="text-[8px] font-mono text-cyan-400 font-bold uppercase mt-1 block">Vite & React Frontend AI</span>
+                          <strong className="text-xs font-bold text-white block leading-none text-left">Byte (Developer & SA)</strong>
+                          <span className="text-[8px] font-mono text-cyan-400 font-bold uppercase mt-1 block">Vite & React Fullstack AI</span>
                         </div>
                       </div>
                       <p className="text-[10px] text-slate-500 leading-normal text-left">
-                        ดูแลการแก้ไขข้อผิดพลาด จัดทำปุ่ม สกีนชีท ควิกลิงก์ เทเลพอร์ต และคอยพากย์เสียงตอบคำสัมภาษณ์ให้คุณ CEO 24 ชม.
+                        ดูแลการเขียนฟังก์ชัน จัดการคีย์ ลิงก์ระบบจำลอง รันไทม์พอร์ต 3000 และคอยส่งสตรีมมิ่งเขียนโค้ดหลังบ้านให้ประธานตลอดยี่สิบสี่ชั่วโมง
                       </p>
                     </div>
                   </div>

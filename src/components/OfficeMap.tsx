@@ -4,6 +4,8 @@ import { Room, RoomId, Character } from "../types";
 import { OFFICE_ROOMS } from "../data";
 // @ts-ignore
 import officeMapImg from "../assets/images/office_map_1780459713188.png";
+// @ts-ignore
+import ceoSpriteImg from "../assets/images/ceo_sprite_1780479445026.png";
 import { 
   Coffee, 
   Terminal, 
@@ -137,6 +139,22 @@ const getPixelSpriteData = (id: string) => {
 // Beautiful vector SVG component delivering sharp, high-fidelity standing pixel-art sprites
 const PixelSprite = ({ id }: { id: string }) => {
   const spec = getPixelSpriteData(id);
+
+  if (id === "user") {
+    return (
+      <div className="relative w-16 h-16 flex items-center justify-center select-none" style={{ transformStyle: "preserve-3d" }}>
+        {/* Ground oval shadow */}
+        <div className="absolute bottom-[2px] left-1/2 -translate-x-1/2 w-[34px] h-[9px] bg-black/45 rounded-full filter blur-[1px] pointer-events-none z-0"></div>
+        <img 
+          src={ceoSpriteImg} 
+          className="w-16 h-16 object-contain z-10 animate-sprite-bob" 
+          alt="CEO Sprite"
+          referrerPolicy="no-referrer"
+          style={{ imageRendering: "pixelated" }}
+        />
+      </div>
+    );
+  }
 
   if (spec.isRobot) {
     return (
@@ -581,22 +599,25 @@ export default function OfficeMap({
 
         {/* 3D Isometric container bounds */}
         <div
-          className="relative transition-all duration-700 flex items-center justify-center"
+          className="relative transition-all duration-700 flex items-center justify-center max-w-full max-h-full"
           style={{
             transform: `scale(${zoomLevel})`, // Background image is already isometric, so we do not rotate/skew!
             transformStyle: "preserve-3d",
-            width: "720px",
-            height: "560px",
+            width: "100%",
+            height: "auto",
+            maxWidth: "100%",
+            maxHeight: "100%",
+            aspectRatio: "1408 / 768",
           }}
         >
           {/* Base Floor Foundation Plate with outer walls shadow */}
-          <div className="absolute inset-0 bg-[#0d1222] rounded-[48px] border-[5px] border-[#1d263a] shadow-[0_60px_120px_rgba(0,0,0,0.95)] overflow-hidden" 
+          <div className="absolute inset-0 bg-[#070a13] rounded-[48px] border-[5px] border-[#1d263a] shadow-[0_60px_120px_rgba(0,0,0,0.95)] overflow-hidden" 
                style={{ transform: "translateZ(-2px)", transformStyle: "preserve-3d" }}>
             
             {isIsometric ? (
               <img 
                 src={officeMapImg} 
-                className="absolute inset-0 w-full h-full object-cover rounded-[42px]" 
+                className="absolute inset-0 w-full h-full object-fill rounded-[42px]" 
                 alt="Office Map Floor"
                 referrerPolicy="no-referrer"
               />
