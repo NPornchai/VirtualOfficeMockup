@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Room, RoomId, Character } from "../types";
 import { OFFICE_ROOMS } from "../data";
+// @ts-ignore
+import officeMapImg from "../assets/images/office_map_1780459713188.png";
 import { 
   Coffee, 
   Terminal, 
@@ -29,19 +31,13 @@ interface OfficeMapProps {
 const getCharacterTagColor = (id: string, defaultColor: string) => {
   switch (id) {
     case "user":
-      return "bg-[#1d6b2c] border-[#3b8a3e] text-white shadow-green-950/40"; // Green name tag
-    case "alice":
-      return "bg-[#b526ab] border-[#d946ef] text-white shadow-pink-950/40"; // Pink name tag
-    case "bob":
+      return "bg-[#1d6b2c] border-[#3b8a3e] text-white shadow-green-950/40"; // Green name tag for Pliew (CEO)
     case "senior-dev":
-      return "bg-[#1066c0] border-[#2b96ff] text-white shadow-blue-950/40"; // Blue name tag
-    case "cathy":
-      return "bg-[#7a1fa2] border-[#a855f7] text-white shadow-purple-950/40"; // Purple name tag
-    case "david":
-      return "bg-[#0e7855] border-[#10b981] text-white shadow-teal-950/40"; // Teal name tag
-    case "code-reviewer": // Frank is code-reviewer
-    case "frank":
-      return "bg-[#c25100] border-[#f97316] text-white shadow-orange-950/40"; // Orange name tag
+      return "bg-[#581c87] border-[#7e22ce] text-[#f3e8ff] shadow-purple-950/40"; // Purple name tag for Byte (Senior Developer)
+    case "code-reviewer":
+      return "bg-[#c25100] border-[#f97316] text-[#ffedd5] shadow-orange-950/40"; // Orange/coral status name tag for Mina (Code Reviewer)
+    case "helper-bot":
+      return "bg-[#0c4a6e] border-[#0284c7] text-[#e0f2fe] shadow-sky-950/40"; // Slate/Sky blue name tag for Momo (Helper Bot)
     default:
       return defaultColor;
   }
@@ -52,113 +48,71 @@ const getPixelSpriteData = (id: string) => {
   switch (id) {
     case "user":
       return {
-        hair: "#5c4033", // Brown
-        skin: "#fed7aa", // Light peach
-        shirt: "#1d4ed8", // Blue
-        pants: "#1e293b", // Slate
-        hasCrown: true,
-        gender: "m"
-      };
-    case "alice":
-      return {
-        hair: "#ec4899", // Pink
-        skin: "#ffd5dc", // Pinkish white
-        shirt: "#db2777", // Dark Pink
-        pants: "#4f46e5", // Purple skirt
-        hasHairBow: true,
-        gender: "f"
+        hair: "#2b1810", // Deep dark brown hair
+        skin: "#fed7aa", // Light peach skin
+        shirt: "#0f172a", // Smart blazer
+        pants: "#1e293b", // Coordinated trousers
+        gender: "m",
+        hasCrown: false,
+        hasGlasses: true,
+        hasTie: true,
+        hasBeard: false,
+        hasHeadphones: false,
+        hasHairBow: false,
+        hasPigtails: false,
+        hasPonytail: false,
+        isRobot: false,
       };
     case "senior-dev":
-    case "bob":
       return {
-        hair: "#78350f", // Dark Ginger
-        skin: "#fed7aa", // Peach
-        shirt: "#ea580c", // Yellow/Orange
-        pants: "#1e3a8a", // Blue
-        hasBeard: true,
-        gender: "m"
-      };
-    case "cathy":
-      return {
-        hair: "#0f172a", // Black curly
-        skin: "#a16207", // Dark warm skin
-        shirt: "#7e22ce", // Purple
-        pants: "#312e81", // Dark leggings
-        hasGoldEarrings: true,
-        gender: "f"
-      };
-    case "david":
-      return {
-        hair: "#1e293b", // Dark Slate hair
-        skin: "#fbcfe8", // Pale pink/cream
-        shirt: "#059669", // Emerald Green
-        pants: "#4b5563", // Gray slate pants
-        hasGlasses: true,
-        gender: "m"
-      };
-    case "eve":
-      return {
-        hair: "#8b5cf6", // Violet hair
-        skin: "#fed7aa", // Peach
-        shirt: "#db2777", // Hot Pink outer hoodie
-        pants: "#1e1b4b", // Dark pants
-        hasPigtails: true,
-        gender: "f"
+        hair: "#8b5cf6", // Vibrant purple hair for Byte
+        skin: "#fef08a", // Light skin
+        shirt: "#1e1b4b", // Dark hoodie
+        pants: "#312e81", // Indigo trousers
+        gender: "m",
+        hasCrown: false,
+        hasGlasses: false,
+        hasTie: false,
+        hasBeard: false,
+        hasHeadphones: true,
+        hasHairBow: false,
+        hasPigtails: false,
+        hasPonytail: false,
+        isRobot: false,
       };
     case "code-reviewer":
-    case "frank":
       return {
-        hair: "#451a03", // Auburn hair
-        skin: "#fde047", // Golden yellow skin
-        shirt: "#ea580c", // DevOps orange shirt
-        pants: "#0284c7", // Bright dev-blue pants
-        hasHeadphones: true,
-        gender: "m"
-      };
-    case "somchai":
-      return {
-        hair: "#94a3b8", // Silver/Grey hair
-        skin: "#fef08a", // Soft Yellow-peach skin
-        shirt: "#2563eb", // Royal blue sweater
-        pants: "#111827", // Dark pants
+        hair: "#06b6d4", // Electric cyan hair for Mina
+        skin: "#ffd5dc", // Pinkish porcelain skin
+        shirt: "#1d4ed8", // Smart blue top
+        pants: "#1e3a8a", // Skirt
+        gender: "f",
+        hasCrown: false,
         hasGlasses: true,
-        gender: "m"
-      };
-    case "wichai":
-      return {
-        hair: "#1e293b", // Slate-black charcoal hair
-        skin: "#fed7aa", // Peach skin
-        shirt: "#dc2626", // Red database engineer shirt
-        pants: "#4b5563", // Grey pants
-        hasTie: true,
-        gender: "m"
-      };
-    case "ladda":
-      return {
-        hair: "#ea580c", // Bright ginger-red hair
-        skin: "#ffedd5", // Light pale skin
-        shirt: "#10b981", // Green top
-        pants: "#4f46e5", // Indigo trousers
+        hasTie: false,
+        hasBeard: false,
+        hasHeadphones: false,
         hasHairBow: true,
-        gender: "f"
+        hasPigtails: false,
+        hasPonytail: true,
+        isRobot: false,
       };
-    case "somsak":
+    case "helper-bot":
       return {
-        hair: "#0f172a", // Navy black hair
-        skin: "#fde047", // Golden skin tone
-        shirt: "#475569", // Gray tech utility jacket
-        pants: "#334155", // Slate pants
-        hasBeard: true,
-        gender: "m"
-      };
-    case "nipa":
-      return {
-        hair: "#fbbf24", // Blonde/gold ponytail line
-        skin: "#ffedd5", // Pale peach skin
-        shirt: "#ec4899", // QA hot pink shirt
-        pants: "#111827", // Black testing skirt
-        hasPigtails: true,
-        gender: "f"
+        hair: "",
+        skin: "",
+        shirt: "",
+        pants: "",
+        gender: "robot",
+        hasCrown: false,
+        hasGlasses: false,
+        hasTie: false,
+        hasBeard: false,
+        hasHeadphones: false,
+        hasHairBow: false,
+        hasPigtails: false,
+        hasPonytail: false,
+        isRobot: true,
       };
     default:
       return {
@@ -166,7 +120,16 @@ const getPixelSpriteData = (id: string) => {
         skin: "#fed7aa",
         shirt: "#334155",
         pants: "#111827",
-        gender: "m"
+        gender: "m",
+        hasCrown: false,
+        hasGlasses: false,
+        hasTie: false,
+        hasBeard: false,
+        hasHeadphones: false,
+        hasHairBow: false,
+        hasPigtails: false,
+        hasPonytail: false,
+        isRobot: false,
       };
   }
 };
@@ -174,6 +137,57 @@ const getPixelSpriteData = (id: string) => {
 // Beautiful vector SVG component delivering sharp, high-fidelity standing pixel-art sprites
 const PixelSprite = ({ id }: { id: string }) => {
   const spec = getPixelSpriteData(id);
+
+  if (spec.isRobot) {
+    return (
+      <div className="relative w-11 h-[68px] flex items-center justify-center select-none">
+        {/* Ground oval shadow */}
+        <div className="absolute bottom-[2px] left-1/2 -translate-x-1/2 w-[34px] h-[9px] bg-black/45 rounded-full filter blur-[0.6px] pointer-events-none z-0"></div>
+
+        <svg 
+          width="100%" 
+          height="100%" 
+          viewBox="0 0 16 24" 
+          className="rendering-pixelated z-10 animate-sprite-bob"
+          style={{ imageRendering: "pixelated" }}
+        >
+          {/* Antenna */}
+          <rect x="7.5" y="1.5" width="1" height="3.5" fill="#64748b" />
+          <rect x="7" y="0.5" width="2" height="1" fill="#ec4899" />
+
+          {/* Robot Head / Body Capsule */}
+          <rect x="3.5" y="5" width="9" height="15" fill="#0284c7" rx="3" />
+          <rect x="4.5" y="6" width="7" height="13" fill="#e0f2fe" rx="2" />
+
+          {/* Visor Area */}
+          <rect x="4.5" y="7" width="7" height="4" fill="#1e293b" />
+          {/* Beaming Blue Eyes inside visor */}
+          <rect x="5.5" y="8" width="1.5" height="1.5" fill="#38bdf8" />
+          <rect x="9" y="8" width="1.5" height="1.5" fill="#38bdf8" />
+
+          {/* Cheek Pink lights */}
+          <rect x="5" y="9.5" width="1" height="0.5" fill="#f43f5e" />
+          <rect x="10" y="9.5" width="1" height="0.5" fill="#f43f5e" />
+
+          {/* Cute Metal Speaker / Mouth */}
+          <rect x="7.5" y="9.5" width="1" height="1" fill="#475569" />
+
+          {/* Screen with glowing heart on Chest */}
+          <rect x="6" y="13" width="4" height="4" fill="#38bdf8" opacity="0.8" />
+          <rect x="7.5" y="14" width="1" height="1" fill="#ec4899" />
+          <rect x="6.5" y="13.5" width="1" height="1" fill="#ec4899" />
+          <rect x="8.5" y="13.5" width="1" height="1" fill="#ec4899" />
+          <rect x="7" y="14.5" width="2" height="1" fill="#ec4899" />
+          <rect x="7.5" y="15.5" width="1" height="1" fill="#ec4899" />
+
+          {/* Floater Base Jet / Bottom plate */}
+          <rect x="5" y="20.5" width="6" height="1" fill="#475569" />
+          <rect x="6" y="21.5" width="4" height="1" fill="#f59e0b" className="animate-pulse" />
+        </svg>
+      </div>
+    );
+  }
+
   const hair = spec.hair;
   const skin = spec.skin;
   const shirt = spec.shirt;
@@ -227,9 +241,15 @@ const PixelSprite = ({ id }: { id: string }) => {
         {/* GENDER & ACCESORIES SPECIFICS */}
         {spec.gender === "f" && (
           <>
-            {/* Long strands */}
+            {/* Long strands / Ponytail for Mina */}
             <rect x="4" y="6" width="1" height="5" fill={hair} />
             <rect x="11" y="6" width="1" height="5" fill={hair} />
+            {spec.hasPonytail && (
+              <>
+                <rect x="2.5" y="5.5" width="2" height="4" fill={hair} />
+                <rect x="1.5" y="6.5" width="1.5" height="4.5" fill={hair} />
+              </>
+            )}
             {spec.hasPigtails && (
               <>
                 <rect x="2" y="7.5" width="2.5" height="2" fill={hair} />
@@ -319,7 +339,12 @@ const PixelSprite = ({ id }: { id: string }) => {
 };
 
 // Repeating isometric-feeling tile textures definition for rooms
-const getRoomFloorStyle = (id: RoomId): React.CSSProperties => {
+const getRoomFloorStyle = (id: RoomId, isImgBg: boolean = false): React.CSSProperties => {
+  if (isImgBg) {
+    return {
+      background: "transparent",
+    };
+  }
   switch (id) {
     case RoomId.LOBBY:
       return {
@@ -428,6 +453,34 @@ const getRoomTheme = (id: RoomId) => {
   }
 };
 
+const getRoomCoordinates = (id: RoomId, isImgBg: boolean) => {
+  if (!isImgBg) {
+    const original = OFFICE_ROOMS.find(r => r.id === id);
+    return original ? original.coordinates : { x: 0, y: 0, width: 0, height: 0 };
+  }
+
+  switch (id) {
+    case RoomId.LOBBY: // CEO Room (Top Left)
+      return { x: 12.5, y: 1.5, width: 25.5, height: 35.5 };
+    case RoomId.HR: // HR (Also inside CEO room, maybe lower right part of CEO room)
+      return { x: 23, y: 15, width: 14, height: 22 };
+    case RoomId.MEETING: // SA Room (Top Right)
+      return { x: 50.5, y: 1.5, width: 27.5, height: 35.5 };
+    case RoomId.FOCUS: // Focus (Also inside SA room, right-hand corner)
+      return { x: 62, y: 15, width: 16, height: 22 };
+    case RoomId.PROJECT: // QA Room (Bottom Left)
+      return { x: 4.5, y: 35, width: 26.5, height: 37.5 };
+    case RoomId.HELPDESK: // HELP-BOT (Bottom Center)
+      return { x: 31.5, y: 59, width: 28.5, height: 31.5 };
+    case RoomId.DEVAREA: // Mapped inside HELP-BOT too (e.g. computer terminal area)
+      return { x: 38, y: 64, width: 22, height: 26 };
+    case RoomId.PANTRY: // Pantry Room (Bottom Right)
+      return { x: 58.5, y: 35, width: 27.5, height: 37.5 };
+    default:
+      return { x: 0, y: 0, width: 0, height: 0 };
+  }
+};
+
 export default function OfficeMap({
   characters,
   userCharacter,
@@ -530,9 +583,7 @@ export default function OfficeMap({
         <div
           className="relative transition-all duration-700 flex items-center justify-center"
           style={{
-            transform: isIsometric 
-              ? `scale(${zoomLevel}) rotateX(54deg) rotateZ(-38deg) translateY(-25px)` 
-              : `scale(${zoomLevel})`,
+            transform: `scale(${zoomLevel})`, // Background image is already isometric, so we do not rotate/skew!
             transformStyle: "preserve-3d",
             width: "720px",
             height: "560px",
@@ -542,48 +593,60 @@ export default function OfficeMap({
           <div className="absolute inset-0 bg-[#0d1222] rounded-[48px] border-[5px] border-[#1d263a] shadow-[0_60px_120px_rgba(0,0,0,0.95)] overflow-hidden" 
                style={{ transform: "translateZ(-2px)", transformStyle: "preserve-3d" }}>
             
-            {/* Soft grid matrix texture */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:16px_16px]"></div>
-            
-            {/* Geometric pathways connector decals */}
-            <div className="absolute inset-[10%] border-[10px] border-dashed border-[#1e273e]/40 rounded-[36px] pointer-events-none"></div>
+            {isIsometric ? (
+              <img 
+                src={officeMapImg} 
+                className="absolute inset-0 w-full h-full object-cover rounded-[42px]" 
+                alt="Office Map Floor"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <>
+                {/* Soft grid matrix texture */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:16px_16px]"></div>
+                
+                {/* Geometric pathways connector decals */}
+                <div className="absolute inset-[10%] border-[10px] border-dashed border-[#1e273e]/40 rounded-[36px] pointer-events-none"></div>
+              </>
+            )}
           </div>
 
-          {/* CENTRAL COURTYARD / GARDEN (Plaza) - EXACTLY DEAD CENTER */}
-          <div 
-            className="absolute left-[33%] top-[30%] text-center pointer-events-none flex flex-col items-center justify-center z-15"
-            style={{
-              width: "34%",
-              height: "40%",
-              transformStyle: "preserve-3d",
-              transform: "translateZ(1px)",
-            }}
-          >
-            {/* Elegant Garden Area */}
-            <div className={`flex flex-col items-center transition-transform duration-300 ${isIsometric ? "rotateZ(38deg) rotateX(-54deg) translateZ(8px)" : ""}`}>
-              
-              {/* Grassy floor bed under the tree */}
-              <div className="w-24 h-11 bg-gradient-to-br from-[#1b253b] to-[#121927] rounded-full border-2 border-slate-700/60 shadow-[0_6px_15px_rgba(0,0,0,0.7)] flex items-center justify-center p-1">
-                <div className="w-full h-full bg-[#1b3f27] rounded-full border border-[#2e5d3c] flex items-center justify-center text-[10px] text-emerald-450 font-black text-emerald-300">
-                  ⛲
+          {/* CENTRAL COURTYARD / GARDEN (Plaza) - Hide in Isometric mode with image background */}
+          {!isIsometric && (
+            <div 
+              className="absolute left-[33%] top-[30%] text-center pointer-events-none flex flex-col items-center justify-center z-15"
+              style={{
+                width: "34%",
+                height: "40%",
+                transformStyle: "preserve-3d",
+                transform: "translateZ(1px)",
+              }}
+            >
+              {/* Elegant Garden Area */}
+              <div className="flex flex-col items-center transition-transform duration-300">
+                {/* Grassy floor bed under the tree */}
+                <div className="w-24 h-11 bg-gradient-to-br from-[#1b253b] to-[#121927] rounded-full border-2 border-slate-700/60 shadow-[0_6px_15px_rgba(0,0,0,0.7)] flex items-center justify-center p-1">
+                  <div className="w-full h-full bg-[#1b3f27] rounded-full border border-[#2e5d3c] flex items-center justify-center text-[10px] text-emerald-450 font-black text-emerald-300">
+                    ⛲
+                  </div>
                 </div>
+
+                {/* Stone well name layout tag */}
+                <span className="text-[9px] text-[#22d3ee] font-mono tracking-wider bg-slate-950/90 font-bold px-2 py-0.5 rounded-md border border-[#1e293b] -mt-1 shadow-lg">
+                  🌲 COU_GARDEN
+                </span>
+
+                {/* Magnificent Fluffy 2.5D Tree */}
+                <div className="text-[52px] filter drop-shadow-[0_12px_18px_rgba(0,0,0,0.7)] select-none -mt-4 animate-[bounce_4.5s_infinite] pointer-events-none">
+                  🌳
+                </div>
+
+                {/* Small floral details */}
+                <div className="absolute -bottom-2 -right-4 text-xs">🌻</div>
+                <div className="absolute -bottom-2 -left-4 text-[10px]">🌷</div>
               </div>
-
-              {/* Stone well name layout tag */}
-              <span className="text-[9px] text-[#22d3ee] font-mono tracking-wider bg-slate-950/90 font-bold px-2 py-0.5 rounded-md border border-[#1e293b] -mt-1 shadow-lg">
-                🌲 COU_GARDEN
-              </span>
-
-              {/* Magnificent Fluffy 2.5D Tree */}
-              <div className="text-[52px] filter drop-shadow-[0_12px_18px_rgba(0,0,0,0.7)] select-none -mt-4 animate-[bounce_4.5s_infinite] pointer-events-none">
-                🌳
-              </div>
-
-              {/* Small floral details */}
-              <div className="absolute -bottom-2 -right-4 text-xs">🌻</div>
-              <div className="absolute -bottom-2 -left-4 text-[10px]">🌷</div>
             </div>
-          </div>
+          )}
 
           {/* Render Rooms and Office Sections Hotspots */}
           {OFFICE_ROOMS.map((room: Room) => {
@@ -593,140 +656,137 @@ export default function OfficeMap({
             // Filter current occupants
             const charactersHere = characters.filter(c => c.currentRoom === room.id);
             const mockSpeech = getMockSpeechBubble(room.id);
+            const coords = getRoomCoordinates(room.id, isIsometric);
 
             return (
               <button
                 key={room.id}
                 id={`room-tile-${room.id}`}
                 onClick={() => onRoomSelect(room.id)}
-                className={`absolute rounded-2xl border-2 cursor-pointer transition-all duration-300 flex flex-col justify-between p-3.5 overflow-hidden text-left ${theme.textColor} ${theme.border} ${
-                  isTargeted 
-                    ? "z-10 border-emerald-400 ring-4 ring-emerald-500/25 shadow-[0_0_25px_rgba(16,185,129,0.3)] scale-[1.03]" 
-                    : "z-0 shadow-[inset_2px_2px_0px_rgba(255,255,255,0.08),_inset_-2px_-2px_0px_rgba(0,0,0,0.5),_4px_4px_0px_rgba(0,0,0,0.4)] hover:border-slate-450 hover:scale-[1.01]"
+                className={`absolute rounded-3xl border-2 cursor-pointer transition-all duration-300 flex flex-col justify-between p-3 overflow-hidden text-left ${
+                  isIsometric 
+                    ? isTargeted 
+                      ? "z-10 border-cyan-400 bg-cyan-400/5 ring-4 ring-cyan-500/20 shadow-[0_0_20px_rgba(34,211,238,0.2)]" 
+                      : "z-0 border-transparent bg-transparent hover:bg-white/5 hover:border-slate-800/30"
+                    : theme.textColor + " " + theme.border + " " + (
+                      isTargeted 
+                        ? "z-10 border-emerald-400 ring-4 ring-emerald-500/25 shadow-[0_0_25px_rgba(16,185,129,0.3)] scale-[1.03]" 
+                        : "z-0 shadow-[inset_2px_2px_0px_rgba(255,255,255,0.08),_inset_-2px_-2px_0px_rgba(0,0,0,0.5),_4px_4px_0px_rgba(0,0,0,0.4)] hover:border-slate-450 hover:scale-[1.01]"
+                    )
                 }`}
                 style={{
-                  left: `${room.coordinates.x}%`,
-                  top: `${room.coordinates.y}%`,
-                  width: `${room.coordinates.width}%`,
-                  height: `${room.coordinates.height}%`,
+                  left: `${coords.x}%`,
+                  top: `${coords.y}%`,
+                  width: `${coords.width}%`,
+                  height: `${coords.height}%`,
                   transform: `translateZ(${isTargeted ? "16px" : "3px"})`,
                   transformStyle: "preserve-3d",
-                  ...getRoomFloorStyle(room.id)
+                  ...getRoomFloorStyle(room.id, isIsometric)
                 }}
               >
-                {/* Visual grid tile feeling inside each room */}
-                <div className="absolute inset-0 bg-[#ffffff01] bg-[radial-gradient(#ffffff02_1px,transparent_1px)] [background-size:10px_10px] pointer-events-none"></div>
+                {/* Visual grid tile feeling inside each room - Hide in Isometric background image mode */}
+                {!isIsometric && (
+                  <>
+                    <div className="absolute inset-0 bg-[#ffffff01] bg-[radial-gradient(#ffffff02_1px,transparent_1px)] [background-size:10px_10px] pointer-events-none"></div>
+                    <div className="absolute inset-x-0 top-0 h-[3px] bg-slate-900/40 border-b border-white/5 pointer-events-none"></div>
+                    <div className="absolute inset-y-0 left-0 w-[3px] bg-slate-900/40 border-r border-white/5 pointer-events-none"></div>
+                  </>
+                )}
 
-                {/* Symmetrical wall trims for physical 3D box looks */}
-                <div className="absolute inset-x-0 top-0 h-[3px] bg-slate-900/40 border-b border-white/5 pointer-events-none"></div>
-                <div className="absolute inset-y-0 left-0 w-[3px] bg-slate-900/40 border-r border-white/5 pointer-events-none"></div>
+                {/* Room signboard (centered plaque on room wall matching screenshot banners) - Hide in Isometric background image mode since labels are built-in */}
+                {!isIsometric && (
+                  <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-10 pointer-events-none select-none">
+                    <span className={`px-2.5 py-0.5 text-[9px] font-black tracking-wider uppercase shadow-[2px_2px_0px_rgba(0,0,0,0.8)] font-mono rounded border border-slate-950/60 ${getRoomSignColor(room.id)}`}>
+                      {room.nameEn}
+                    </span>
+                  </div>
+                )}
 
-                {/* Room signboard (centered plaque on room wall matching screenshot banners) */}
-                <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-10 pointer-events-none select-none">
-                  <span className={`px-2.5 py-0.5 text-[9px] font-black tracking-wider uppercase shadow-[2px_2px_0px_rgba(0,0,0,0.8)] font-mono rounded border border-slate-950/60 ${getRoomSignColor(room.id)}`}>
+                {/* Subtle targeted Indicator Tag for active room in Isometric mode */}
+                {isIsometric && isTargeted && (
+                  <div className="absolute top-2 left-2 bg-[#090f1d]/90 border border-cyan-400 px-2 py-0.5 rounded text-[8px] font-bold font-mono text-cyan-400 shadow-md animate-pulse">
                     {room.nameEn}
-                  </span>
-                </div>
-
-                {/* Styled 2.5D visual floor furniture & interior details */}
-                <div className="absolute bottom-2.5 right-2 text-2xl pointer-events-none select-none opacity-50 filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
-                  {room.id === RoomId.LOBBY && (
-                    <div className="flex gap-1 items-center">
-                      <span title="Sofa">🛋️</span>
-                      <span className="text-[10px]" title="Plant">🪴</span>
-                    </div>
-                  )}
-                  {room.id === RoomId.MEETING && (
-                    <div className="flex gap-1 items-center">
-                      <span title="TV Monitor Chart">📊</span>
-                      <span title="Conference Table">🪑</span>
-                    </div>
-                  )}
-                  {room.id === RoomId.FOCUS && (
-                    <div className="flex gap-1 items-center">
-                      <span title="Desks">💻</span>
-                      <span title="Bookshelves">📚</span>
-                    </div>
-                  )}
-                  {room.id === RoomId.HELPDESK && (
-                    <div className="flex gap-1 items-center">
-                      <span title="Desk Counter">💁‍♀️</span>
-                      <span className="text-[10px]" title="Lamp">💡</span>
-                    </div>
-                  )}
-                  {room.id === RoomId.PANTRY && (
-                    <div className="flex gap-1 items-center">
-                      <span title="Refrigerator">🧊</span>
-                      <span title="Microwave Table">🍽️</span>
-                    </div>
-                  )}
-                  {room.id === RoomId.PROJECT && (
-                    <div className="flex gap-1 items-center">
-                      <span title="Kanban cork board">📋</span>
-                      <span title="Screen workspace">🖥️</span>
-                    </div>
-                  )}
-                  {room.id === RoomId.HR && (
-                    <div className="flex gap-1 items-center">
-                      <span title="Cupboards">📁</span>
-                      <span title="Workstation">💼</span>
-                    </div>
-                  )}
-                  {room.id === RoomId.DEVAREA && (
-                    <div className="flex gap-1 items-center">
-                      <span className="animate-pulse" title="Servers Mainframe">🎛️</span>
-                      <span title="Code console">⚙️</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Dynamic blinking node lights on DevOps server cabinets */}
-                {room.id === RoomId.DEVAREA && (
-                  <div className="absolute bottom-3 left-3 flex gap-1 pointer-events-none">
-                    <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-ping"></span>
-                    <span className="w-1.5 h-1.5 bg-[#22d3ee] rounded-full"></span>
-                    <span className="w-1 h-1 bg-red-500 rounded-full animate-bounce"></span>
                   </div>
                 )}
 
-                {/* Code symbol bracket indicator on Dev Area desks */}
-                {room.id === RoomId.DEVAREA && (
-                  <div className="absolute top-8 left-3 z-10 pointer-events-none bg-[#090f1d] px-1 py-0.5 rounded border border-slate-800 text-[8px] font-mono font-black text-cyan-400">
-                    &lt;/&gt; code
-                  </div>
-                )}
-                
-                {room.id === RoomId.FOCUS && (
-                  <div className="absolute bottom-3 left-3 flex gap-1 pointer-events-none text-[8px] tracking-wide text-zinc-650 bg-slate-950 border border-slate-800 rounded px-1 text-slate-500 font-mono">
-                    HUSH 🤫
+                {/* Styled 2.5D visual floor furniture & interior details - Hide in Isometric background image mode */}
+                {!isIsometric && (
+                  <div className="absolute bottom-2.5 right-2 text-2xl pointer-events-none select-none opacity-50 filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+                    {room.id === RoomId.LOBBY && (
+                      <div className="flex gap-1 items-center">
+                        <span title="Sofa">🛋️</span>
+                        <span className="text-[10px]" title="Plant">🪴</span>
+                      </div>
+                    )}
+                    {room.id === RoomId.MEETING && (
+                      <div className="flex gap-1 items-center">
+                        <span title="TV Monitor Chart">📊</span>
+                        <span title="Conference Table">🪑</span>
+                      </div>
+                    )}
+                    {room.id === RoomId.FOCUS && (
+                      <div className="flex gap-1 items-center">
+                        <span title="Desks">💻</span>
+                        <span title="Bookshelves">📚</span>
+                      </div>
+                    )}
+                    {room.id === RoomId.HELPDESK && (
+                      <div className="flex gap-1 items-center">
+                        <span title="Desk Counter">💁‍♀️</span>
+                        <span className="text-[10px]" title="Lamp">💡</span>
+                      </div>
+                    )}
+                    {room.id === RoomId.PANTRY && (
+                      <div className="flex gap-1 items-center">
+                        <span title="Refrigerator">🧊</span>
+                        <span title="Microwave Table">🍽️</span>
+                      </div>
+                    )}
+                    {room.id === RoomId.PROJECT && (
+                      <div className="flex gap-1 items-center">
+                        <span title="Kanban cork board">📋</span>
+                        <span title="Screen workspace">🖥️</span>
+                      </div>
+                    )}
+                    {room.id === RoomId.HR && (
+                      <div className="flex gap-1 items-center">
+                        <span title="Cupboards">📁</span>
+                        <span title="Workstation">💼</span>
+                      </div>
+                    )}
+                    {room.id === RoomId.DEVAREA && (
+                      <div className="flex gap-1 items-center">
+                        <span className="animate-pulse" title="Servers Mainframe">🎛️</span>
+                        <span title="Code console">⚙️</span>
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {/* Symmetrical Comic speech bubbles (white, black borders, custom tail - matches screenshot perfectly) */}
                 {mockSpeech && !isTargeted && (
-                  <div className={`absolute top-8 left-3 bg-white text-slate-900 border-2 border-slate-950 px-2.5 py-1 rounded-xl text-[9px] font-black shadow-[2px_2px_0px_rgba(0,0,0,1)] flex items-center gap-1 z-35 pointer-events-none transition-all duration-300 ${
-                    isIsometric ? "rotateZ(38deg) rotateX(-54deg) origin-bottom-left -translate-y-2 scale-95" : ""
-                  }`}>
+                  <div className={`absolute top-8 left-3 bg-white text-slate-900 border-2 border-slate-950 px-2.5 py-1 rounded-xl text-[9px] font-black shadow-[2px_2px_0px_rgba(0,0,0,1)] flex items-center gap-1 z-35 pointer-events-none transition-all duration-300`}>
                     <span>{mockSpeech}</span>
-                    {/* Tiny Comic Tail element */}
                     <div className="absolute top-[96%] left-4 w-1.5 h-1.5 bg-white border-r-2 border-b-2 border-slate-950 rotate-45"></div>
                   </div>
                 )}
 
-                {/* Room Title Grid block inside */}
-                <div className={`flex items-start gap-1.5 mt-5 transition-transform ${isIsometric ? "rotateZ(38deg) rotateX(-54deg) origin-left" : ""}`}>
-                  <div className="p-1 rounded-md bg-slate-950/50 border border-slate-800/30">
-                    {getRoomIcon(room.id)}
+                {/* Room Title & description box - Hide in Isometric background image mode to avoid text clashing */}
+                {!isIsometric && (
+                  <div className="flex items-start gap-1.5 mt-5">
+                    <div className="p-1 rounded-md bg-slate-950/50 border border-slate-800/30">
+                      {getRoomIcon(room.id)}
+                    </div>
+                    <div className="leading-tight">
+                      <h3 className="text-[11px] font-black text-[#e2e8f0] tracking-wide font-display">{room.nameEn}</h3>
+                      <p className="text-[8.5px] text-[#475569] font-mono leading-none">{room.nameTh}</p>
+                    </div>
                   </div>
-                  <div className="leading-tight">
-                    <h3 className="text-[11px] font-black text-[#e2e8f0] tracking-wide font-display">{room.nameEn}</h3>
-                    <p className="text-[8.5px] text-[#475569] font-mono leading-none">{room.nameTh}</p>
-                  </div>
-                </div>
+                )}
 
-                {/* Active user footprint indicators */}
+                {/* Active user footprint indicators - Render simple heads in Isometric mode */}
                 {charactersHere.length > 0 && (
-                  <div className={`mt-auto flex gap-1.5 items-center z-10 transition-transform ${isIsometric ? "rotateZ(38deg) rotateX(-54deg) origin-bottom-left" : ""}`}>
+                  <div className="mt-auto flex gap-1.5 items-center z-10">
                     <div className="flex -space-x-1.5 items-center">
                       {charactersHere.map(c => (
                         <div key={c.id} className="w-5 h-5 rounded-full bg-[#0a0f19] flex items-center justify-center text-[10px] border border-slate-700 shadow-lg">
@@ -734,7 +794,9 @@ export default function OfficeMap({
                         </div>
                       ))}
                     </div>
-                    <span className="text-[7.5px] text-emerald-400 font-mono font-bold bg-emerald-500/10 px-1 py-0.2 rounded border border-emerald-500/20 uppercase tracking-widest">({charactersHere.length} active)</span>
+                    {!isIsometric && (
+                      <span className="text-[7.5px] text-emerald-400 font-mono font-bold bg-emerald-500/10 px-1 py-0.2 rounded border border-emerald-500/20 uppercase tracking-widest">({charactersHere.length} active)</span>
+                    )}
                   </div>
                 )}
               </button>
@@ -752,20 +814,21 @@ export default function OfficeMap({
               const charIndex = roommatesList.findIndex(c => c.id === char.id);
               
               const totalMates = roommatesList.length;
-              let xOffset = 50; 
+              let xOffset = 45; 
               let yOffset = 55;
 
               if (totalMates > 1) {
                 const angle = (charIndex / totalMates) * Math.PI * 2;
-                xOffset = 51 + Math.cos(angle) * 20;
-                yOffset = 56 + Math.sin(angle) * 20;
+                xOffset = 45 + Math.cos(angle) * 25;
+                yOffset = 55 + Math.sin(angle) * 25;
               }
 
-              const leftPercent = targetRoom.coordinates.x + (targetRoom.coordinates.width * (xOffset / 100));
-              const topPercent = targetRoom.coordinates.y + (targetRoom.coordinates.height * (yOffset / 100));
+              const coords = getRoomCoordinates(char.currentRoom, isIsometric);
+              const leftPercent = coords.x + (coords.width * (xOffset / 100));
+              const topPercent = coords.y + (coords.height * (yOffset / 100));
 
               const hasMessage = !!recentDialogs[char.id];
-              const charZ = activeRoomId === targetRoom.id ? "38px" : "28px";
+              const charZ = activeRoomId === targetRoom.id ? "45px" : "30px";
 
               return (
                 <motion.div
@@ -782,9 +845,7 @@ export default function OfficeMap({
                   transition={{ type: "spring", stiffness: 100, damping: 15 }}
                   className="absolute z-[100] pointer-events-none"
                   style={{
-                    transform: isIsometric 
-                      ? `translate(-50%, -50%) translateZ(${charZ}) rotateZ(38deg) rotateX(-54deg)` 
-                      : `translate(-50%, -50%) translateZ(${charZ})`,
+                    transform: `translate(-50%, -50%) translateZ(${charZ})`, // No counter-rotation needed because container is flat
                     transformStyle: "preserve-3d",
                   }}
                 >

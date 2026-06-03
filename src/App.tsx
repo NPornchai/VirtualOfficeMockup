@@ -85,7 +85,7 @@ export default function App() {
   const [auditReport, setAuditReport] = useState<string | null>(null);
 
   // CEO User state customization
-  const [ceoName, setCeoName] = useState<string>("คุณบอส CEO");
+  const [ceoName, setCeoName] = useState<string>("พี่ปลิว (CEO)");
   const [isEditingCeoName, setIsEditingCeoName] = useState<boolean>(false);
   const [showAllPeople, setShowAllPeople] = useState<boolean>(false);
 
@@ -408,7 +408,7 @@ export default function App() {
                 </div>
               )}
               
-              <span className="text-[9.5px] font-mono text-gray-400 tracking-wide block mt-0.5 truncate">Product Designer</span>
+              <span className="text-[9.5px] font-mono text-gray-400 tracking-wide block mt-0.5 truncate">CEO</span>
             </div>
           </div>
 
@@ -420,16 +420,16 @@ export default function App() {
             >
               <div className="flex items-center gap-1.5">
                 <Users className="w-3.5 h-3.5 text-sky-400" />
-                <span>People (12)</span>
+                <span>Colleagues (3)</span>
               </div>
               <span className="text-[10px] text-[#2b96ff] font-mono font-bold bg-[#2b96ff]/10 px-1.5 py-0.5 border border-[#2b96ff]/20 rounded-md">▲</span>
             </button>
 
-            {/* People list sorted as: Alice, Bob, Cathy, David, Eve, Frank */}
+            {/* People list sorted as: Byte, Mina, Momo */}
             <div className="space-y-1.5 pr-1 max-h-[280px] overflow-y-auto custom-scrollbar-thin">
               {(() => {
                 // Ensure correct display order matching the screenshot
-                const displayOrder = ["alice", "senior-dev", "cathy", "david", "eve", "code-reviewer"];
+                const displayOrder = ["senior-dev", "code-reviewer", "helper-bot"];
                 const list = displayOrder
                   .map(id => characters.find(c => c.id === id))
                   .filter(Boolean) as Character[];
@@ -441,7 +441,7 @@ export default function App() {
                       key={char.id}
                       onClick={() => {
                         handleRoomSelect(char.currentRoom);
-                        triggerSpeechBubble(char.id, `สวัสดีครับคุณบอส! แชทปรึกษางานผมในนี้ได้เลยนะครับ 😄`);
+                        triggerSpeechBubble(char.id, char.greetingTh);
                       }}
                       className={`p-2 rounded-xl border cursor-pointer flex items-center justify-between transition-all duration-200 select-none ${
                         isUserHere
