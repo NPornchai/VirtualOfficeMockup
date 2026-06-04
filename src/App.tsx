@@ -354,7 +354,7 @@ export default function App() {
     <div className="h-screen bg-[#070a13] text-gray-100 flex flex-col font-sans select-none overflow-hidden">
 
       {/* ══ TOP HEADER BAR ══════════════════════════════════════════════════ */}
-      <header className="flex-shrink-0 h-11 bg-[#090d16] border-b border-[#151e33] flex items-center px-4 gap-4 z-30">
+      <header className="flex-shrink-0 h-16 bg-[#090d16] border-b border-[#151e33] flex items-center px-4 gap-4 z-30">
 
         {/* Logo */}
         <div className="flex items-center gap-2.5 pr-4 border-r border-[#151e33] flex-shrink-0">
@@ -434,7 +434,7 @@ export default function App() {
       <div className="flex flex-1 overflow-hidden min-h-0">
         
         {/* ══ LEFT NAV ═══════════════════════════════════════════════════ */}
-        <aside className="w-40 flex-shrink-0 bg-[#090d16] border-r border-[#151e33] flex flex-col z-20">
+        <aside className="w-52 flex-shrink-0 bg-[#090d16] border-r border-[#151e33] flex flex-col z-20">
 
           {/* Room nav */}
           <div className="px-2 pt-3 pb-1">
@@ -512,7 +512,7 @@ export default function App() {
         </div>
 
         {/* ══ RIGHT PANEL ═════════════════════════════════════════════════ */}
-        <div className="w-80 flex-shrink-0 bg-[#090d16]/95 backdrop-blur-sm border-l border-[#151e33] flex flex-col overflow-hidden z-20">
+        <div className="w-96 flex-shrink-0 bg-[#090d16]/95 backdrop-blur-sm border-l border-[#151e33] flex flex-col overflow-hidden z-20">
 
           {/* Panel header — room tabs */}
           <div className="flex-shrink-0 px-3 py-2 border-b border-[#151e33] flex items-center gap-1.5 flex-wrap min-h-[40px]">

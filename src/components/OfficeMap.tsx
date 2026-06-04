@@ -60,29 +60,40 @@ const getCharacterTagColor = (id: string, defaultColor: string) => {
 
 // Glow color per character
 const CHAR_GLOW: Record<string, string> = {
-  "user":          "rgba(16,185,129,0.5)",
+  "user":          "rgba(251,191,36,0.7)",  // yellow aura for CEO
   "senior-dev":    "rgba(139,92,246,0.5)",
   "code-reviewer": "rgba(59,130,246,0.5)",
   "helper-bot":    "rgba(14,165,233,0.5)",
+};
+
+const CHAR_SIZE: Record<string, number> = {
+  "user":          192,
+  "senior-dev":    192,
+  "code-reviewer": 192,
+  "helper-bot":    192,
 };
 
 // Character sprite using actual PNG model images
 const PixelSprite = ({ id }: { id: string }) => {
   const modelImg = CHARACTER_MODELS[id];
   const glow = CHAR_GLOW[id] ?? "rgba(255,255,255,0.2)";
+  const size = CHAR_SIZE[id] ?? 88;
 
   return (
-    <div className="relative flex items-center justify-center select-none" style={{ width: 88, height: 88 }}>
+    <div className="relative flex items-center justify-center select-none" style={{ width: size, height: size }}>
       {/* Ground oval shadow */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-3 bg-black/60 rounded-full blur-sm pointer-events-none z-0" />
       {/* Model image */}
       <img
         src={modelImg}
         alt={id}
-        className="w-[88px] h-[88px] object-contain z-10 animate-sprite-bob rounded-2xl"
+        className="object-contain z-10 animate-sprite-bob"
         style={{
+          width: size,
+          height: size,
           imageRendering: "pixelated",
-          filter: `drop-shadow(0 6px 14px ${glow}) drop-shadow(0 0 8px ${glow})`,
+          background: "none",
+          filter: `drop-shadow(0 4px 12px ${glow}) drop-shadow(0 0 6px ${glow})`,
         }}
       />
     </div>
@@ -251,7 +262,6 @@ export default function OfficeMap({
   onRoomSelect,
   recentDialogs
 }: OfficeMapProps) {
-  const [isIsometric, setIsIsometric] = useState<boolean>(true);
   const [zoomLevel, setZoomLevel] = useState<number>(1.0);
 
   // Helper code to fetch sign layout colors
@@ -319,22 +329,6 @@ export default function OfficeMap({
   return (
     <div className="relative w-full h-full bg-[#070a13] overflow-hidden flex flex-col select-none">
       
-      {/* Top Map Action Bar Overlay */}
-      <div className="absolute top-4 left-4 z-20 flex gap-2">
-        <button
-          id="toggle-isometric-btn"
-          onClick={() => setIsIsometric(!isIsometric)}
-          className="px-3 py-1.5 bg-[#0e1424]/90 hover:bg-[#1a253e] text-[11px] font-bold text-sky-350 border border-[#202e4d] rounded-xl flex items-center gap-1.5 transition-all shadow-lg active:scale-95 cursor-pointer text-sky-300"
-        >
-          <Layers className="w-3.5 h-3.5 text-sky-400" />
-          {isIsometric ? "Standard 2D flat" : "Isometric 3D View"}
-        </button>
-
-        <span className="px-2.5 py-1.5 bg-[#070a12]/90 border border-[#17223b] text-[9px] uppercase tracking-wider font-mono text-gray-400 rounded-xl flex items-center gap-1.5">
-          <Navigation className="w-3 h-3 text-emerald-400 animate-pulse" />
-          {isIsometric ? "3D ISOMETRIC DEV SUITE" : "2D CONTAINER BLUEPRINT"}
-        </span>
-      </div>
 
       {/* Main Office Stage Area */}
       <div className="flex-1 w-full h-full flex items-center justify-center overflow-hidden relative bg-[#060a14]">
@@ -356,63 +350,17 @@ export default function OfficeMap({
           }}
         >
           {/* Base Floor Foundation Plate with outer walls shadow */}
-          <div className="absolute inset-0 bg-[#060a14] rounded-[32px] border-2 border-[#1a2540]/60 shadow-[0_40px_100px_rgba(0,0,0,0.95)] overflow-hidden"
+          <div className="absolute inset-0 bg-transparent rounded-none border-0 overflow-hidden"
                style={{ transform: "translateZ(-2px)", transformStyle: "preserve-3d" }}>
 
-            {isIsometric ? (
-              <img
-                src={officeMapImg}
-                className="absolute inset-0 w-full h-full object-cover rounded-[30px]"
-                alt="Office Map Floor"
-                referrerPolicy="no-referrer"
-              />
-            ) : (
-              <>
-                {/* Soft grid matrix texture */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:16px_16px]"></div>
-                
-                {/* Geometric pathways connector decals */}
-                <div className="absolute inset-[10%] border-[10px] border-dashed border-[#1e273e]/40 rounded-[36px] pointer-events-none"></div>
-              </>
-            )}
+            <img
+              src={officeMapImg}
+              className="absolute inset-0 w-full h-full object-cover"
+              alt="Office Map Floor"
+              referrerPolicy="no-referrer"
+            />
           </div>
 
-          {/* CENTRAL COURTYARD / GARDEN (Plaza) - Hide in Isometric mode with image background */}
-          {!isIsometric && (
-            <div 
-              className="absolute left-[33%] top-[30%] text-center pointer-events-none flex flex-col items-center justify-center z-15"
-              style={{
-                width: "34%",
-                height: "40%",
-                transformStyle: "preserve-3d",
-                transform: "translateZ(1px)",
-              }}
-            >
-              {/* Elegant Garden Area */}
-              <div className="flex flex-col items-center transition-transform duration-300">
-                {/* Grassy floor bed under the tree */}
-                <div className="w-24 h-11 bg-gradient-to-br from-[#1b253b] to-[#121927] rounded-full border-2 border-slate-700/60 shadow-[0_6px_15px_rgba(0,0,0,0.7)] flex items-center justify-center p-1">
-                  <div className="w-full h-full bg-[#1b3f27] rounded-full border border-[#2e5d3c] flex items-center justify-center text-[10px] text-emerald-450 font-black text-emerald-300">
-                    ⛲
-                  </div>
-                </div>
-
-                {/* Stone well name layout tag */}
-                <span className="text-[9px] text-[#22d3ee] font-mono tracking-wider bg-slate-950/90 font-bold px-2 py-0.5 rounded-md border border-[#1e293b] -mt-1 shadow-lg">
-                  🌲 COU_GARDEN
-                </span>
-
-                {/* Magnificent Fluffy 2.5D Tree */}
-                <div className="text-[52px] filter drop-shadow-[0_12px_18px_rgba(0,0,0,0.7)] select-none -mt-4 animate-[bounce_4.5s_infinite] pointer-events-none">
-                  🌳
-                </div>
-
-                {/* Small floral details */}
-                <div className="absolute -bottom-2 -right-4 text-xs">🌻</div>
-                <div className="absolute -bottom-2 -left-4 text-[10px]">🌷</div>
-              </div>
-            </div>
-          )}
 
           {/* Render Rooms and Office Sections Hotspots */}
           {OFFICE_ROOMS.map((room: Room) => {
@@ -422,7 +370,7 @@ export default function OfficeMap({
             // Filter current occupants
             const charactersHere = characters.filter(c => c.currentRoom === room.id);
             const mockSpeech = getMockSpeechBubble(room.id);
-            const coords = getRoomCoordinates(room.id, isIsometric);
+            const coords = getRoomCoordinates(room.id, true);
 
             return (
               <button
@@ -430,50 +378,24 @@ export default function OfficeMap({
                 id={`room-tile-${room.id}`}
                 onClick={() => onRoomSelect(room.id)}
                 className={`absolute cursor-pointer transition-all duration-300 flex flex-col justify-between p-3 overflow-hidden text-left ${
-                  isIsometric
-                    ? isTargeted
-                      ? "z-10 bg-cyan-400/[0.06]"
-                      : "z-0 bg-transparent hover:bg-white/[0.025]"
-                    : theme.textColor + " " + theme.border + " " + (
-                      isTargeted
-                        ? "z-10 border-emerald-400 ring-4 ring-emerald-500/25 shadow-[0_0_25px_rgba(16,185,129,0.3)] scale-[1.03]"
-                        : "z-0 shadow-[inset_2px_2px_0px_rgba(255,255,255,0.08),_inset_-2px_-2px_0px_rgba(0,0,0,0.5),_4px_4px_0px_rgba(0,0,0,0.4)] hover:scale-[1.01]"
-                    )
+                  isTargeted ? "z-10 bg-cyan-400/[0.06]" : "z-0 bg-transparent hover:bg-white/[0.025]"
                 }`}
                 style={{
                   left: `${coords.x}%`,
                   top: `${coords.y}%`,
                   width: `${coords.width}%`,
                   height: `${coords.height}%`,
-                  border: isIsometric ? "none" : undefined,
+                  border: "none",
                   outline: "none",
-                  borderRadius: isIsometric ? 0 : undefined,
+                  borderRadius: 0,
                   zIndex: isTargeted ? 20 : room.id === RoomId.FOCUS ? 8 : 0,
                   transform: `translateZ(${isTargeted ? "16px" : "3px"})`,
                   transformStyle: "preserve-3d",
-                  ...getRoomFloorStyle(room.id, isIsometric)
+                  ...getRoomFloorStyle(room.id, true)
                 }}
               >
-                {/* Visual grid tile feeling inside each room - Hide in Isometric background image mode */}
-                {!isIsometric && (
-                  <>
-                    <div className="absolute inset-0 bg-[#ffffff01] bg-[radial-gradient(#ffffff02_1px,transparent_1px)] [background-size:10px_10px] pointer-events-none"></div>
-                    <div className="absolute inset-x-0 top-0 h-[3px] bg-slate-900/40 border-b border-white/5 pointer-events-none"></div>
-                    <div className="absolute inset-y-0 left-0 w-[3px] bg-slate-900/40 border-r border-white/5 pointer-events-none"></div>
-                  </>
-                )}
-
-                {/* Room signboard (centered plaque on room wall matching screenshot banners) - Hide in Isometric background image mode since labels are built-in */}
-                {!isIsometric && (
-                  <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-10 pointer-events-none select-none">
-                    <span className={`px-2.5 py-0.5 text-[9px] font-black tracking-wider uppercase shadow-[2px_2px_0px_rgba(0,0,0,0.8)] font-mono rounded border border-slate-950/60 ${getRoomSignColor(room.id)}`}>
-                      {room.nameEn}
-                    </span>
-                  </div>
-                )}
-
-                {/* Lobby always-visible click hint in isometric mode */}
-                {isIsometric && room.id === RoomId.FOCUS && !isTargeted && (
+                {/* Lobby always-visible click hint */}
+                {room.id === RoomId.FOCUS && !isTargeted && (
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <span className="bg-emerald-900/70 border border-emerald-500/40 text-emerald-300 text-[8px] font-bold font-mono px-2 py-0.5 rounded-full backdrop-blur-sm">
                       🏢 LOBBY
@@ -481,66 +403,13 @@ export default function OfficeMap({
                   </div>
                 )}
 
-                {/* Subtle targeted Indicator Tag for active room in Isometric mode */}
-                {isIsometric && isTargeted && (
+                {/* Active room label */}
+                {isTargeted && (
                   <div className="absolute top-2 left-2 bg-[#090f1d]/90 border border-cyan-400 px-2 py-0.5 rounded text-[8px] font-bold font-mono text-cyan-400 shadow-md animate-pulse">
                     {room.nameEn}
                   </div>
                 )}
 
-                {/* Styled 2.5D visual floor furniture & interior details - Hide in Isometric background image mode */}
-                {!isIsometric && (
-                  <div className="absolute bottom-2.5 right-2 text-2xl pointer-events-none select-none opacity-50 filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
-                    {room.id === RoomId.LOBBY && (
-                      <div className="flex gap-1 items-center">
-                        <span title="Sofa">🛋️</span>
-                        <span className="text-[10px]" title="Plant">🪴</span>
-                      </div>
-                    )}
-                    {room.id === RoomId.MEETING && (
-                      <div className="flex gap-1 items-center">
-                        <span title="TV Monitor Chart">📊</span>
-                        <span title="Conference Table">🪑</span>
-                      </div>
-                    )}
-                    {room.id === RoomId.FOCUS && (
-                      <div className="flex gap-1 items-center">
-                        <span title="Desks">💻</span>
-                        <span title="Bookshelves">📚</span>
-                      </div>
-                    )}
-                    {room.id === RoomId.HELPDESK && (
-                      <div className="flex gap-1 items-center">
-                        <span title="Desk Counter">💁‍♀️</span>
-                        <span className="text-[10px]" title="Lamp">💡</span>
-                      </div>
-                    )}
-                    {room.id === RoomId.PANTRY && (
-                      <div className="flex gap-1 items-center">
-                        <span title="Refrigerator">🧊</span>
-                        <span title="Microwave Table">🍽️</span>
-                      </div>
-                    )}
-                    {room.id === RoomId.PROJECT && (
-                      <div className="flex gap-1 items-center">
-                        <span title="Kanban cork board">📋</span>
-                        <span title="Screen workspace">🖥️</span>
-                      </div>
-                    )}
-                    {room.id === RoomId.HR && (
-                      <div className="flex gap-1 items-center">
-                        <span title="Cupboards">📁</span>
-                        <span title="Workstation">💼</span>
-                      </div>
-                    )}
-                    {room.id === RoomId.DEVAREA && (
-                      <div className="flex gap-1 items-center">
-                        <span className="animate-pulse" title="Servers Mainframe">🎛️</span>
-                        <span title="Code console">⚙️</span>
-                      </div>
-                    )}
-                  </div>
-                )}
 
                 {/* Symmetrical Comic speech bubbles (white, black borders, custom tail - matches screenshot perfectly) */}
                 {mockSpeech && !isTargeted && (
@@ -550,20 +419,7 @@ export default function OfficeMap({
                   </div>
                 )}
 
-                {/* Room Title & description box - Hide in Isometric background image mode to avoid text clashing */}
-                {!isIsometric && (
-                  <div className="flex items-start gap-1.5 mt-5">
-                    <div className="p-1 rounded-md bg-slate-950/50 border border-slate-800/30">
-                      {getRoomIcon(room.id)}
-                    </div>
-                    <div className="leading-tight">
-                      <h3 className="text-[11px] font-black text-[#e2e8f0] tracking-wide font-display">{room.nameEn}</h3>
-                      <p className="text-[8.5px] text-[#475569] font-mono leading-none">{room.nameTh}</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Active user footprint indicators - Render simple heads in Isometric mode */}
+                {/* Active user footprint indicators */}
                 {charactersHere.length > 0 && (
                   <div className="mt-auto flex gap-1.5 items-center z-10">
                     <div className="flex -space-x-1.5 items-center">
@@ -573,9 +429,6 @@ export default function OfficeMap({
                         </div>
                       ))}
                     </div>
-                    {!isIsometric && (
-                      <span className="text-[7.5px] text-emerald-400 font-mono font-bold bg-emerald-500/10 px-1 py-0.2 rounded border border-emerald-500/20 uppercase tracking-widest">({charactersHere.length} active)</span>
-                    )}
                   </div>
                 )}
               </button>
@@ -603,7 +456,7 @@ export default function OfficeMap({
                 yOffset = center.y + Math.sin(angle) * 9;
               }
 
-              const coords = getRoomCoordinates(char.currentRoom, isIsometric);
+              const coords = getRoomCoordinates(char.currentRoom, true);
               const leftPercent = coords.x + (coords.width * (xOffset / 100));
               const topPercent = coords.y + (coords.height * (yOffset / 100));
 
@@ -635,7 +488,7 @@ export default function OfficeMap({
                       initial={{ scale: 0, opacity: 0, y: 15 }}
                       animate={{ scale: 1, opacity: 1, y: 0 }}
                       exit={{ scale: 0, opacity: 0 }}
-                      className="absolute bottom-[72px] left-1/2 -translate-x-1/2 min-w-[140px] max-w-[180px] bg-white text-slate-900 border-2 border-slate-950 p-2 rounded-xl shadow-[3px_3px_0px_rgba(0,0,0,1)] flex flex-col gap-1 z-45 text-left pointer-events-auto"
+                      className="absolute bottom-[140px] left-1/2 -translate-x-1/2 min-w-[140px] max-w-[180px] bg-white text-slate-900 border-2 border-slate-950 p-2 rounded-xl shadow-[3px_3px_0px_rgba(0,0,0,1)] flex flex-col gap-1 z-45 text-left pointer-events-auto"
                       style={{ transformStyle: "preserve-3d", transform: "translateZ(20px)" }}
                     >
                       <div className="flex justify-between items-center bg-slate-100 px-1 py-0.5 rounded border border-slate-200 text-[8px] font-bold text-slate-800 uppercase tracking-widest leading-none">
@@ -645,16 +498,19 @@ export default function OfficeMap({
                       <p className="text-[9px] font-bold leading-normal text-slate-950 break-words font-mono">
                         {recentDialogs[char.id]}
                       </p>
-                      {/* Tail point pointing at character */}
-                      <div className="absolute top-[98%] left-1/2 -translate-x-1/2 w-2 h-2 bg-white border-r-2 border-b-2 border-slate-950 rotate-45 transform -translate-y-[4px]"></div>
+                      {/* Tail pointing down toward character */}
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-white border-r-2 border-b-2 border-slate-950 rotate-45 -translate-y-1"></div>
                     </motion.div>
                   )}
 
                   {/* Character Node wrapper */}
-                  <div className="flex flex-col items-center justify-center filter drop-shadow-[2px_4px_6px_rgba(0,0,0,0.6)]">
-                    
-                    {/* Character Name badge (green, pink, blue... solid color cards matching picture) */}
-                    <div className={`mb-1.5 py-0.5 px-2 rounded-md border text-[9px] font-bold tracking-wide shadow-md flex items-center leading-tight transition-all select-none ${getCharacterTagColor(char.id, "bg-slate-850 border-slate-700 text-white")}`}>
+                  <div className="relative inline-block filter drop-shadow-[2px_4px_6px_rgba(0,0,0,0.6)]">
+
+                    {/* Sprite */}
+                    <PixelSprite id={char.id} />
+
+                    {/* Name badge — absolutely positioned near top of sprite */}
+                    <div className={`absolute top-6 left-1/2 -translate-x-1/2 whitespace-nowrap py-0.5 px-2 rounded-md border text-[9px] font-bold tracking-wide shadow-md flex items-center leading-tight select-none z-20 ${getCharacterTagColor(char.id, "bg-slate-850 border-slate-700 text-white")}`}>
                       <span>{char.id === "user" ? "You" : char.name}</span>
                     </div>
 
@@ -662,9 +518,6 @@ export default function OfficeMap({
                     {char.id === "user" && (
                       <span className="absolute inset-x-0 -bottom-1 h-2 bg-emerald-400/25 blur-[1px] rounded-full animate-ping pointer-events-none"></span>
                     )}
-
-                    {/* Beautiful custom pixel art sprite */}
-                    <PixelSprite id={char.id} />
                   </div>
                 </motion.div>
               );
