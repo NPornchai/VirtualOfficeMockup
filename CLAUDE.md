@@ -23,77 +23,93 @@
 
 ## Project overview
 
-Virtual Office Mockup — isometric pixel-art office simulation where the user (CEO Pliew/ปลิว) navigates between rooms and interacts with 3 AI colleagues powered by Gemini. Built originally in Google AI Studio and extended locally.
-
-Rooms: CEO Room (Lobby) → SA Room (Meeting/Byte) → QA Room (Kanban/Mina) → Helper Desk (Momo) → Pantry (mini-game)
+VirtualOfficeMockup is being evolved from a decorative React + Gemini mockup into a
+**Personal Claude Code Orchestration Dashboard** — a single-user web UI to manage projects,
+configure global + project-scoped agents, and command real Claude Code CLI runs with live
+streaming output. See `.claude/context/report-architecture-2026-06-03-rev3.md` for full analysis.
 
 ---
 
-## Stack
+## Target architecture (rev3)
+
+```
+React 19 (Vite) frontend
+└── REST + SSE → Express 4 backend
+    ├── better-sqlite3  (projects / agents / runs)
+    ├── child_process   (spawn claude CLI)
+    └── SSE             (stream stream-json → browser)
+```
+
+**Two memory layers — keep distinct, never duplicate:**
+
+| Layer | Where | Purpose |
+|---|---|---|
+| Run / session | SQLite `runs.session_id` | Conversation continuity; `--resume` |
+| Project memory | Repo `CLAUDE.md` + `.claude/context/` | Durable narrative; git-committed |
+
+---
+
+## Current stack (what exists today)
 
 | Layer | Technology |
 |---|---|
 | Frontend | React 19, TypeScript, Tailwind CSS v4, Vite 6 |
-| Animation | motion (Framer Motion v12), lucide-react icons |
+| Animation | motion (Framer Motion v12), lucide-react |
 | Backend | Express 4 + tsx (dev), esbuild bundle (prod) |
-| AI | Google Gemini API (`@google/genai`) — model `gemini-2.5-flash` |
-| TTS | Browser Web Speech API (Thai locale, `th-TH`) |
+| AI | Google Gemini API — **to be removed** once Phase 2 complete |
 | Port | 3000 (dev + prod) |
-| Env | `GEMINI_API_KEY` in `.env` (see `.env.example`) |
 
 ---
 
-## Solution structure
+## Solution structure (current)
 
 ```
 src/
-├── App.tsx               — root component; ALL global state lives here
-├── data.ts               — static data (rooms, characters, tasks, calendar, trivia, coffee)
-├── types.ts              — TypeScript interfaces (Room, Character, Message, OfficeTask, CalendarEvent)
+├── App.tsx               — root component; ALL global state (pending context refactor)
+├── data.ts               — static data (rooms, characters, tasks, calendar)
+├── types.ts              — TypeScript interfaces
 ├── main.tsx              — React entry point
 ├── index.css             — global styles
 ├── assets/images/        — CEO sprite + office map PNG
 └── components/
-    ├── OfficeMap.tsx      — isometric office layout renderer with character avatars + speech bubbles
-    ├── ChatPanel.tsx      — reusable chat panel (DM channels + group meeting)
-    ├── TaskBoard.tsx      — Kanban board (QA Room: todo/in_progress/review/done)
-    ├── PantryMinigame.tsx — coffee drip mini-game + developer trivia quiz
-    └── ScreenShareHub.tsx — code audit / screen share UI (posts to /api/chat)
-server.ts                 — Express backend; Gemini API proxy (/api/chat, /api/meeting)
-vite.config.ts            — Vite + Tailwind plugin; HMR disabled via DISABLE_HMR env var
+    ├── OfficeMap.tsx      — isometric office layout renderer
+    ├── ChatPanel.tsx      — reusable chat panel
+    ├── TaskBoard.tsx      — Kanban board
+    ├── PantryMinigame.tsx — coffee drip mini-game (to be repurposed/removed)
+    └── ScreenShareHub.tsx — screen share UI (to be repurposed as agent console)
+server.ts                 — Express backend; Gemini proxy (to be replaced)
+vite.config.ts
 ```
 
 ---
 
 ## Hard rules — never violate these
 
-1. **No auth system.** Single-user only (CEO Pliew). No login/logout flows.
-2. **All Gemini calls via backend only.** Frontend calls `/api/chat` or `/api/meeting` — never imports `@google/genai` directly.
-3. **Global state stays in `App.tsx`** until task-3 (context refactor) is deliberately started. Do not partially migrate state.
-4. **Static fallback must always work.** Every AI character has a `staticFallback()` in `server.ts`. If Gemini is unreachable, app must still respond — never break the fallback path.
-5. **TTS text is cleaned before speak.** Strip markdown and limit to 160 chars before `speechSynthesis.speak()`. Keep this cleaning logic intact.
-6. **Avatar URLs from DiceBear** for AI characters. Do not replace with local files unless explicitly asked.
+1. **Single-user only.** Bind server to `127.0.0.1`. No auth system, no multi-user flows.
+2. **Never expose port externally.** `acceptEdits`/`bypassPermissions` = arbitrary local code execution from a web request — do not expose.
+3. **All AI calls via backend only.** No direct AI SDK calls from frontend (Gemini now; Claude Code CLI later).
+4. **DB never stores context-file content.** `CLAUDE.md` + `.claude/context/*.md` live in the repo. Read from disk on demand; never cache in SQLite.
+5. **`code-reviewer` agent is read-only.** Tools: `Read, Grep, Glob` only. Mode: `plan`. It must never have `Edit`/`Write`/`Bash`.
+6. **Global state stays in `App.tsx`** until the context refactor is done deliberately and completely — no partial migration.
+7. **Static Gemini fallback must survive until removed.** Do not break the fallback path during transition.
 
 ---
 
-## Auth & role access
+## Agent roster (global — available in all projects)
 
-No authentication. Single-user app — the user is always "CEO Pliew" (id: `"user"`).
-
-| Character ID | Name | Role | Room |
-|---|---|---|---|
-| `user` | Pliew / ปลิว | CEO (human) | Lobby (follows navigation) |
-| `senior-dev` | Byte / ไบท์ | Senior Developer (AI) | SA Room (Meeting) |
-| `code-reviewer` | Mina / มีนา | Code Reviewer (AI) | QA Room (Project) |
-| `helper-bot` | Momo / โมโม่ | Helper Bot (AI) | Helper Desk |
+| Agent | Scope | Tools | Permission Mode | Writes context files? |
+|---|---|---|---|---|
+| `senior-dev` | global | Read, Edit, Write, Bash, Grep, Glob | `acceptEdits` | Yes — rewrites current-task + handoff |
+| `code-reviewer` | global | Read, Grep, Glob | `plan` | No — read-only |
 
 ---
 
 ## Known deferred items — do not fix without a dedicated task
 
-| Item | File | Reason deferred |
-|---|---|---|
-| Refactor global state from `App.tsx` into React Context hooks | `src/App.tsx` | Large scope; tracked as task-3 in Kanban |
-| Benchmark `/api/chat` + `/api/meeting` under stress | `server.ts` | Low priority; tracked as task-4 in Kanban |
-| Verify Gemini model name in `server.ts` (line 99 + 144 use `"gemini-3.5-flash"` — may be wrong) | `server.ts` | Needs API key to test; don't rename without confirming availability |
-| `ImageSource/` folder — raw AI-generated images not yet wired to any component | `ImageSource/` | Source assets only; not referenced in code |
+| Item | Reason deferred |
+|---|---|
+| Refactor global state from `App.tsx` into React Context | Large scope; blocked behind architecture pivot |
+| Benchmark `/api/chat` + `/api/meeting` under stress | Low priority; Gemini endpoints being removed |
+| Verify Gemini model name `"gemini-3.5-flash"` in server.ts | Moot once Gemini removed |
+| `ImageSource/` folder — raw assets not wired to components | No design spec; deferred |
+| Replace Gemini with Claude Code (Phase 0–2) | Next major work — see current-task.md |

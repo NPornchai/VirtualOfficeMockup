@@ -7,37 +7,44 @@
 
 ---
 
-# Handoff — 2026-06-03
+# Handoff — 2026-06-04
 
 ## What was done this session
 
 | Fix/Feature | File | Detail |
 |---|---|---|
-| Connected remote repo | `.git/` | `git remote add origin https://github.com/NPornchai/VirtualOfficeMockup.git` + pulled `main` |
-| Created context files system | `CLAUDE.md`, `.claude/context/` | Bootstrap per `C:\Users\pnaka\.claude\guides\context-files-system.md` |
+| Read and internalized rev3 architecture report | `.claude/context/report-architecture-2026-06-03-rev3.md` | Global agents, context-files first-class, SSE, Phase 0 spike |
+| Converted rev3 report to HTML | `.claude/context/report-architecture-2026-06-03-rev3.html` | Dark theme, sidebar TOC, agent scope cards, SQL syntax highlight |
+| Updated CLAUDE.md to rev3 | `CLAUDE.md` | Target architecture, two memory layers, updated hard rules, global agent roster |
+| Updated current-task.md | `.claude/context/current-task.md` | Phase 0 spike as next task with 5-step definition of done |
+| Updated handoff.md | `.claude/context/handoff.md` | This file |
+| Appended rev3 decisions to decisions.md | `.claude/context/decisions.md` | 4 new entries from rev3 |
 
 ## Key decisions made
 
-- No code was changed this session — only repo connection and context file bootstrap.
-- Context system follows the guide at `C:\Users\pnaka\.claude\guides\context-files-system.md` exactly.
+- **No code was changed** — only context files and reports updated this session
+- Architecture pivot to rev3 accepted: global agents + context-files first-class + SSE + Phase 0 spike
+- `CLAUDE.md` now reflects the target state (Orchestration Dashboard), not just the current mockup
 
 ## Files changed this session
 
 ```
-CLAUDE.md                          (created)
-.claude/context/current-task.md    (created)
-.claude/context/handoff.md         (created)
-.claude/context/decisions.md       (created)
+CLAUDE.md
+.claude/context/current-task.md
+.claude/context/handoff.md
+.claude/context/decisions.md
+.claude/context/report-architecture-2026-06-03-rev3.html   (created)
 ```
 
 ## Warnings / watch out for
 
-- **`server.ts` model name** (lines 99 + 144): uses `"gemini-3.5-flash"` which may not exist. The app's own UI (App.tsx:1071) references `gemini-2.5-flash`. Do not rename without a live API key to confirm.
-- **All global state in `App.tsx`**: the file is 1083 lines. Next task (context refactor) must not be partially done — do it all at once or not at all (hard rule).
-- **Static fallback must survive any refactor**: `staticFallback()` in `server.ts` is the app's safety net when Gemini is unavailable. Never delete or bypass it.
-- **No auth**: any feature that assumes user identity should hardcode `id: "user"` — there is no session/token system.
+- **Phase 0 must come first.** Do not start Phase 1 (schema) until the spike proves `claude --output-format stream-json` + `--resume` works on Windows. The entire architecture depends on this.
+- **`code-reviewer` is read-only by rule.** If you configure this agent, tools must be `Read,Grep,Glob` only, mode `plan`. No exceptions — it must physically not be able to mutate files.
+- **DB never stores context-file content.** `CLAUDE.md` and `.claude/context/*.md` are read from disk on demand via `GET /api/projects/:id/context`. Never cache them in SQLite.
+- **Gemini fallback still active.** `server.ts` still has the Gemini proxy. Do not remove until Phase 2 ProcessManager is complete and tested.
+- **All global state still in `App.tsx`.** 1083 lines. The context refactor is deferred behind the architecture pivot — do not start it until the new backend structure is in place.
 
 ## What's next
 
 See `current-task.md` for the prioritized task list.
-**Immediate next task:** Refactor global state from `App.tsx` into `src/context/OfficeContext.tsx` (Kanban task-3).
+**Immediate next task:** Phase 0 Spike — prove `claude -p --output-format stream-json` → SSE → `session_id` → `--resume` on Windows before writing any schema or UI.
