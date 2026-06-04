@@ -339,744 +339,380 @@ export default function App() {
     setEvents(prev => [...prev, newEvent]);
   };
 
+  const navItems = [
+    { id: RoomId.LOBBY,    label: "CEO Room",    icon: "👑", color: "text-sky-400"     },
+    { id: RoomId.MEETING,  label: "SA Room",     icon: "💻", color: "text-purple-400"  },
+    { id: RoomId.PROJECT,  label: "QA Room",     icon: "📋", color: "text-cyan-400"    },
+    { id: RoomId.HELPDESK, label: "Helper Desk", icon: "🤖", color: "text-rose-400"    },
+    { id: RoomId.PANTRY,   label: "Pantry",      icon: "☕", color: "text-amber-400"   },
+    { id: RoomId.FOCUS,    label: "Lobby",       icon: "🏢", color: "text-emerald-400" },
+  ];
+
+  const activeRoom = OFFICE_ROOMS.find(r => r.id === activeRoomId);
+
   return (
-    <div className="min-h-screen bg-[#070a13] text-gray-100 flex flex-col font-sans select-none overflow-x-hidden">
-      
-      <div className="flex flex-1 flex-col lg:flex-row min-h-screen">
-        
-        {/* ==================== LEFT NAVIGATION SIDEBAR ==================== */}
-        <aside className="w-full lg:w-72 bg-[#090d16] border-b lg:border-b-0 lg:border-r border-[#151e33] flex flex-col p-5 space-y-6 z-20 flex-shrink-0">
-          
-          {/* Symmetrical Retro Monitor Logo Header */}
-          <div className="flex items-center gap-3 border-b border-[#141d33] pb-4 select-none">
-            {/* Retro PC CRT Monitor Box in SVG/CSS */}
-            <div className="relative w-11 h-9 bg-[#1a253d] rounded-md flex flex-col items-center justify-between p-1 border border-slate-650/80 border-slate-600 shadow-[0_0_12px_rgba(56,189,248,0.25)] flex-shrink-0">
-              {/* Inner Green Grid Screen */}
-              <div className="w-full h-[20px] bg-[#1d5c2e] border border-[#22c55e]/30 rounded-[3px] flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.12)_1px,transparent_1px)] bg-[size:100%_3.5px] pointer-events-none"></div>
-                <span className="text-[9px] text-[#4ade80] font-black z-10 animate-pulse">💻</span>
-              </div>
-              {/* Monitor stand */}
-              <div className="w-4 h-1 bg-slate-500 rounded-sm leading-none -mt-0.5"></div>
-              <div className="w-6 h-[1.5px] bg-slate-400 rounded-full"></div>
+    <div className="h-screen bg-[#070a13] text-gray-100 flex flex-col font-sans select-none overflow-hidden">
+
+      {/* ══ TOP HEADER BAR ══════════════════════════════════════════════════ */}
+      <header className="flex-shrink-0 h-11 bg-[#090d16] border-b border-[#151e33] flex items-center px-4 gap-4 z-30">
+
+        {/* Logo */}
+        <div className="flex items-center gap-2.5 pr-4 border-r border-[#151e33] flex-shrink-0">
+          <div className="relative w-9 h-7 bg-[#1a253d] rounded-md flex flex-col items-center justify-between p-0.5 border border-slate-600 shadow-[0_0_10px_rgba(56,189,248,0.2)]">
+            <div className="w-full h-[16px] bg-[#1d5c2e] border border-[#22c55e]/30 rounded-[2px] flex items-center justify-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.12)_1px,transparent_1px)] bg-[size:100%_3.5px]"></div>
+              <span className="text-[8px] text-[#4ade80] font-black z-10 animate-pulse">💻</span>
             </div>
-            
-            <div className="text-left leading-none flex flex-col justify-center">
-              <div className="flex items-center gap-1">
-                <span className="text-[17px] font-black tracking-wider text-slate-100 font-display">VIRTUAL</span>
-              </div>
-              <span className="text-[17px] font-black tracking-wider text-[#2b96ff] font-display mt-0.5">OFFICE</span>
-            </div>
+            <div className="w-3 h-[1px] bg-slate-500 rounded-sm"></div>
+            <div className="w-5 h-[1px] bg-slate-400 rounded-full"></div>
           </div>
-
-          {/* User Profile CEO Module (You) */}
-          <div className="bg-[#0b101c] border border-[#1e2a44] rounded-2xl p-3.5 flex items-center gap-3 shadow-md relative group">
-            <div className="relative w-11 h-11 bg-slate-950 rounded-full border border-emerald-500 flex items-center justify-center p-0.5 overflow-hidden select-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] flex-shrink-0">
-              <img 
-                src={userCharacter.avatarUrl} 
-                alt="CEO avatar" 
-                className="w-full h-full object-cover scale-110 rendering-pixelated"
-                referrerPolicy="no-referrer"
-              />
-              {/* Green status circle */}
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#0b101c] shadow"></span>
-            </div>
-
-            <div className="flex-1 leading-tight text-left min-w-0">
-              <div className="flex items-center gap-1.5 text-left mb-0.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse border border-emerald-400"></span>
-                <span className="text-[8.5px] font-bold text-emerald-400 font-mono uppercase tracking-wider">Online</span>
-              </div>
-              
-              {isEditingCeoName ? (
-                <div className="flex gap-1 items-center mt-0.5">
-                  <input 
-                    id="ceo-name-input"
-                    type="text"
-                    value={ceoName}
-                    onChange={(e) => setCeoName(e.target.value)}
-                    onBlur={() => setIsEditingCeoName(false)}
-                    onKeyDown={(e) => { if (e.key === "Enter") setIsEditingCeoName(false); }}
-                    className="bg-[#05080f] px-1.5 py-0.5 border border-emerald-500 rounded text-[9.5px] text-white max-w-[90px] font-mono font-bold"
-                    autoFocus
-                  />
-                  <button onClick={() => setIsEditingCeoName(false)} className="text-emerald-400 text-[9px] font-extrabold">OK</button>
-                </div>
-              ) : (
-                <div className="flex items-center gap-1">
-                  <h3 className="text-xs font-black text-white tracking-wide truncate max-w-[110px] font-display">
-                    {ceoName}
-                  </h3>
-                  <button onClick={() => setIsEditingCeoName(true)} className="p-0.5 hover:bg-slate-800 rounded text-gray-500 hover:text-white transition-colors cursor-pointer" title="Edit Name">
-                    <Edit3 className="w-3 h-3" />
-                  </button>
-                </div>
-              )}
-              
-              <span className="text-[9.5px] font-mono text-gray-400 tracking-wide block mt-0.5 truncate">CEO</span>
-            </div>
+          <div className="leading-none">
+            <div className="text-[13px] font-black tracking-wider text-slate-100">VIRTUAL</div>
+            <div className="text-[13px] font-black tracking-wider text-[#2b96ff] -mt-0.5">OFFICE</div>
           </div>
+        </div>
 
-          {/* PEOPLE (12) Dropdown / Collapse Section matching screenshot */}
-          <div className="flex flex-col flex-1 min-h-[220px] space-y-2">
-            <button 
-              onClick={() => setShowAllPeople(!showAllPeople)}
-              className="flex justify-between items-center text-[10.5px] font-black uppercase tracking-widest text-[#9edcfe] cursor-pointer hover:text-white transition-colors py-1 pl-0.5"
-            >
-              <div className="flex items-center gap-1.5">
-                <Users className="w-3.5 h-3.5 text-sky-400" />
-                <span>Colleagues (3)</span>
-              </div>
-              <span className="text-[10px] text-[#2b96ff] font-mono font-bold bg-[#2b96ff]/10 px-1.5 py-0.5 border border-[#2b96ff]/20 rounded-md">▲</span>
+        {/* Active room breadcrumb */}
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <span className="text-emerald-400 font-mono text-xs animate-[pulse_3s_infinite]">●</span>
+          <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">Sandbox Live</span>
+          {activeRoom && (
+            <>
+              <span className="text-[#1e2a44]">/</span>
+              <span className="text-[11px] font-bold text-[#2b96ff] font-mono">{activeRoom.nameEn}</span>
+            </>
+          )}
+        </div>
+
+        {/* CEO name editor */}
+        <div className="flex items-center gap-2 px-3 border-x border-[#151e33]">
+          <img src={userCharacter.avatarUrl} className="w-6 h-6 rounded-full border border-emerald-500 object-cover" referrerPolicy="no-referrer" />
+          {isEditingCeoName ? (
+            <input
+              id="ceo-name-input"
+              type="text"
+              value={ceoName}
+              onChange={e => setCeoName(e.target.value)}
+              onBlur={() => setIsEditingCeoName(false)}
+              onKeyDown={e => { if (e.key === "Enter") setIsEditingCeoName(false); }}
+              className="bg-[#05080f] px-1.5 py-0.5 border border-emerald-500 rounded text-[10px] text-white w-28 font-mono font-bold"
+              autoFocus
+            />
+          ) : (
+            <button onClick={() => setIsEditingCeoName(true)} className="flex items-center gap-1 group">
+              <span className="text-[11px] font-bold text-white font-mono">{ceoName}</span>
+              <Edit3 className="w-3 h-3 text-gray-600 group-hover:text-gray-300 transition-colors" />
             </button>
+          )}
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        </div>
 
-            {/* People list sorted as: Byte, Mina, Momo */}
-            <div className="space-y-1.5 pr-1 max-h-[280px] overflow-y-auto custom-scrollbar-thin">
-              {(() => {
-                // Ensure correct display order matching the screenshot
-                const displayOrder = ["senior-dev", "code-reviewer", "helper-bot"];
-                const list = displayOrder
-                  .map(id => characters.find(c => c.id === id))
-                  .filter(Boolean) as Character[];
+        {/* Controls */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <button
+            id="btn-toggle-mute"
+            onClick={() => { setIsMuted(!isMuted); if (isMuted && 'speechSynthesis' in window) triggerVoiceSynthesis("โหมดเสียงเปิดใช้งานแล้วค่ะ", "Kore"); }}
+            className={`px-2.5 py-1 rounded-lg border transition-all flex items-center gap-1.5 text-xs font-bold ${!isMuted ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 animate-pulse" : "bg-slate-900/65 border-slate-800 text-gray-500 hover:text-gray-300"}`}
+            title={isMuted ? "เปิดเสียงพากย์" : "ปิดเสียงพากย์"}
+          >
+            {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+            <span className="text-[10px] font-mono">{isMuted ? "Voice OFF" : "Voice ON"}</span>
+          </button>
+          <button
+            id="btn-settings"
+            onClick={() => setFooterActiveTab(footerActiveTab === "settings" ? null : "settings")}
+            className="p-1.5 bg-slate-900 border border-slate-800 rounded-lg text-gray-400 hover:text-white transition-colors flex items-center gap-1 text-xs font-bold"
+            title="ตั้งค่า API"
+          >
+            <Settings className="w-3.5 h-3.5" />
+            <span className="text-[10px] font-mono">API</span>
+          </button>
+        </div>
+      </header>
 
-                return list.map(char => {
-                  const isUserHere = activeRoomId === char.currentRoom;
-                  return (
-                    <div 
-                      key={char.id}
-                      onClick={() => {
-                        handleRoomSelect(char.currentRoom);
-                        triggerSpeechBubble(char.id, char.greetingTh);
-                      }}
-                      className={`p-2 rounded-xl border cursor-pointer flex items-center justify-between transition-all duration-200 select-none ${
-                        isUserHere
-                          ? "border-[#2b96ff]/50 bg-[#2b96ff]/5 text-white shadow-sm"
-                          : "bg-[#0b101c] border-[#131b2c] text-gray-300 hover:border-[#1e2a44]"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 min-w-0">
-                        <img 
-                          src={char.avatarUrl} 
-                          alt={char.name} 
-                          className="w-7 h-7 rounded-full border border-slate-800 bg-slate-900 object-cover scale-105 rendering-pixelated flex-shrink-0" 
-                          referrerPolicy="no-referrer" 
-                        />
-                        <div className="leading-none text-left min-w-0">
-                          <h4 className="text-[11px] font-bold text-white font-mono truncate">{char.name}</h4>
-                          <p className="text-[8.5px] text-[#5c6e88] font-bold mt-0.5 leading-none truncate">{char.role}</p>
-                        </div>
-                      </div>
+      {/* ══ BODY ════════════════════════════════════════════════════════════ */}
+      <div className="flex flex-1 overflow-hidden min-h-0">
+        
+        {/* ══ LEFT NAV ═══════════════════════════════════════════════════ */}
+        <aside className="w-40 flex-shrink-0 bg-[#090d16] border-r border-[#151e33] flex flex-col z-20">
 
-                      <div className="flex items-center gap-1.5 flex-shrink-0">
-                        {isUserHere && (
-                          <span className="text-[7.5px] bg-[#2b96ff]/15 px-1 py-0.2 rounded text-[#2b96ff] border border-[#2b96ff]/10 font-bold font-mono">MEET</span>
-                        )}
-                        <span className={`w-1.5 h-1.5 rounded-full ${char.statusColor}`} title={char.status}></span>
-                      </div>
-                    </div>
-                  );
-                });
-              })()}
-              
-              {/* "+ 6 more" trailing tag matching the screenshot precisely */}
-              <div className="text-center py-1.5 text-[9.5px] font-mono text-slate-500 font-bold uppercase tracking-wider bg-slate-950/20 rounded-xl border border-dashed border-slate-900/60 select-none">
-                + 6 more
-              </div>
-            </div>
-          </div>
-
-          {/* QUICK LINKS Teleport links */}
-          <div className="flex flex-col space-y-2 border-t border-[#131b2c] pt-4 mt-auto">
-            <span className="text-[9.5px] font-black uppercase tracking-widest text-[#475569] font-mono pl-0.5 text-left select-none">
-              QUICK LINKS
-            </span>
-
-            <ul className="grid grid-cols-1 gap-1.5 font-sans">
-              {[
-                { id: RoomId.LOBBY, label: "CEO Room", icon: "👑", iconBg: "bg-blue-500/10 border-blue-500/25 text-blue-400" },
-                { id: RoomId.MEETING, label: "SA Room (Meeting)", icon: "💻", iconBg: "bg-purple-500/10 border-purple-500/25 text-purple-400" },
-                { id: RoomId.PROJECT, label: "QA Room (Kanban)", icon: "📋", iconBg: "bg-cyan-500/10 border-cyan-500/25 text-cyan-400" },
-                { id: RoomId.HELPDESK, label: "Helper Desk", icon: "🤖", iconBg: "bg-rose-500/10 border-rose-500/25 text-rose-400" },
-                { id: RoomId.PANTRY, label: "Pantry Room", icon: "☕", iconBg: "bg-amber-500/10 border-amber-500/25 text-amber-400" },
-              ].map(item => {
-                const isSelected = activeRoomId === item.id;
+          {/* Room nav */}
+          <div className="px-2 pt-3 pb-1">
+            <span className="text-[8px] font-mono text-[#475569] uppercase tracking-widest px-2 block mb-1.5">Rooms</span>
+            <nav className="space-y-0.5">
+              {navItems.map(item => {
+                const isActive = activeRoomId === item.id;
                 return (
-                  <li key={item.id}>
-                    <button
-                      id={`teleport-btn-${item.id}`}
-                      onClick={() => handleRoomSelect(item.id)}
-                      className={`w-full px-2.5 py-1.5 rounded-xl border text-[11px] text-left transition-all flex items-center gap-2.5 cursor-pointer select-none ${
-                        isSelected 
-                          ? "bg-[#111827] border-[#2b96ff] text-white font-bold shadow-md translate-x-1" 
-                          : "bg-[#0b101c] border-[#131b2c] text-gray-400 hover:text-white hover:border-[#1e2a44]"
-                      }`}
-                    >
-                      <span className={`w-5.5 h-5.5 rounded-lg border flex items-center justify-center text-[10px] ${item.iconBg}`}>
-                        {item.icon}
-                      </span>
-                      <span className="font-semibold">{item.label}</span>
-                    </button>
-                  </li>
+                  <button
+                    key={item.id}
+                    id={`teleport-btn-${item.id}`}
+                    onClick={() => handleRoomSelect(item.id)}
+                    className={`w-full px-2.5 py-2 rounded-xl text-left text-[11px] flex items-center gap-2 transition-all cursor-pointer ${
+                      isActive
+                        ? "bg-[#2b96ff]/10 border border-[#2b96ff]/25 text-white font-bold"
+                        : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
+                    }`}
+                  >
+                    <span className="text-sm leading-none flex-shrink-0">{item.icon}</span>
+                    <span className="font-semibold leading-tight truncate">{item.label}</span>
+                    {isActive && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#2b96ff] flex-shrink-0 animate-pulse"></span>}
+                  </button>
                 );
               })}
-            </ul>
+            </nav>
+          </div>
+
+          <div className="mx-3 border-t border-[#151e33] my-2"></div>
+
+          {/* Colleagues */}
+          <div className="px-2 flex-1 overflow-y-auto">
+            <span className="text-[8px] font-mono text-[#475569] uppercase tracking-widest px-2 block mb-1.5">Colleagues</span>
+            <div className="space-y-0.5">
+              {characters.filter(c => c.id !== "user").map(char => {
+                const isHere = activeRoomId === char.currentRoom;
+                return (
+                  <button
+                    key={char.id}
+                    onClick={() => { handleRoomSelect(char.currentRoom); triggerSpeechBubble(char.id, char.greetingTh); }}
+                    className={`w-full px-2 py-1.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer text-left ${isHere ? "bg-white/5" : "hover:bg-white/5"}`}
+                  >
+                    <img src={char.avatarUrl} alt={char.name} className="w-6 h-6 rounded-full border border-slate-700 flex-shrink-0 object-cover" referrerPolicy="no-referrer" />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[10.5px] font-bold text-white truncate leading-none">{char.name}</div>
+                      <div className="flex items-center gap-1 mt-0.5">
+                        <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${char.statusColor}`}></span>
+                        <span className="text-[8px] text-gray-500 truncate">{char.status}</span>
+                      </div>
+                    </div>
+                    {isHere && <span className="text-[7px] bg-[#2b96ff]/15 px-1 rounded text-[#2b96ff] border border-[#2b96ff]/15 font-bold font-mono flex-shrink-0">HERE</span>}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Agent count */}
+          <div className="px-4 py-2.5 border-t border-[#151e33]">
+            <span className="text-[9px] font-mono text-emerald-400 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
+              {characters.filter(c => c.isAi).length} Agents Online
+            </span>
           </div>
         </aside>
 
-        {/* ==================== RIGHT VIEWPORT PANEL ==================== */}
-        <main className="flex-1 p-4 md:p-6 lg:p-7 flex flex-col space-y-5 max-w-full overflow-hidden bg-[#070a13]">
-          
-          {/* Mini Top Action Header panel */}
-          <header className="flex justify-between items-center bg-[#090d16]/40 p-2.5 px-4 rounded-2xl border border-[#16203a] relative z-25">
-            <div className="flex items-center gap-2 animate-[pulse_3s_infinite]">
-              <span className="text-emerald-400 font-mono text-xs">●</span>
-              <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest leading-none">Virtual Office Sandbox Live</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              {/* Audio toggle speaker */}
-              <button
-                id="btn-toggle-mute"
-                onClick={() => {
-                  setIsMuted(!isMuted);
-                  if (isMuted && 'speechSynthesis' in window) {
-                    triggerVoiceSynthesis("โหมดเสียง สังเคราะห์ พูดคุยเปิดใช้งานแล้วค่ะ", "Kore");
-                  }
-                }}
-                className={`px-3 py-1.5 rounded-xl border transition-all flex items-center gap-1.5 text-xs font-bold ${
-                  !isMuted 
-                    ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 shadow-lg scale-95 animate-pulse" 
-                    : "bg-slate-900/65 border-slate-800 text-gray-500 hover:text-gray-300"
-                }`}
-                title={isMuted ? "เปิดเสียงพากย์ AI" : "ปิดเสียงพากย์"}
-              >
-                {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-                <span className="text-[10.5px] font-mono leading-none">{isMuted ? "AI Voice OFF" : "Voice Mode ON"}</span>
-              </button>
-
-              <button
-                id="btn-settings"
-                onClick={() => setFooterActiveTab(footerActiveTab === "settings" ? null : "settings")}
-                className="p-1 px-2.5 bg-slate-900 border border-slate-800 rounded-xl text-gray-400 hover:text-white transition-colors text-xs font-bold flex items-center gap-1 cursor-pointer"
-                title="ตั้งค่า API/ความลับ"
-              >
-                <Settings className="w-3.5 h-3.5" />
-                <span className="text-[10.5px] font-mono">API</span>
-              </button>
-            </div>
-          </header>
-
-          {/* Spatial Iso Map rendering */}
-          <OfficeMap 
+        {/* ══ CENTER MAP ══════════════════════════════════════════════════ */}
+        <div className="flex-1 min-w-0 min-h-0">
+          <OfficeMap
             characters={characters}
             userCharacter={userCharacter}
             activeRoomId={activeRoomId}
             onRoomSelect={handleRoomSelect}
             recentDialogs={recentDialogs}
           />
+        </div>
 
-          {/* Symmetrical Room Widgets container (Loads below map) */}
-          <div className="transition-all duration-300 relative z-10">
+        {/* ══ RIGHT PANEL ═════════════════════════════════════════════════ */}
+        <div className="w-80 flex-shrink-0 bg-[#090d16]/95 backdrop-blur-sm border-l border-[#151e33] flex flex-col overflow-hidden z-20">
+
+          {/* Panel header — room tabs */}
+          <div className="flex-shrink-0 px-3 py-2 border-b border-[#151e33] flex items-center gap-1.5 flex-wrap min-h-[40px]">
+            {activeRoomId === RoomId.MEETING && (
+              <>
+                <button onClick={() => setSaRoomTab("group")} className={`px-2.5 py-1 text-[10px] font-bold rounded-lg border transition-all cursor-pointer ${saRoomTab === "group" ? "bg-[#7c3aed] text-white border-[#9061f9]" : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"}`}>🤝 Group</button>
+                <button onClick={() => setSaRoomTab("byte")}  className={`px-2.5 py-1 text-[10px] font-bold rounded-lg border transition-all cursor-pointer ${saRoomTab === "byte"  ? "bg-cyan-500 text-slate-950 border-cyan-400" : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"}`}>💬 Byte</button>
+              </>
+            )}
+            {activeRoomId === RoomId.PROJECT && (
+              <>
+                <button onClick={() => setQaRoomTab("kanban")} className={`px-2.5 py-1 text-[10px] font-bold rounded-lg border transition-all cursor-pointer ${qaRoomTab === "kanban" ? "bg-cyan-500 text-slate-950 border-cyan-400" : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"}`}>📋 Kanban</button>
+                <button onClick={() => setQaRoomTab("mina")}   className={`px-2.5 py-1 text-[10px] font-bold rounded-lg border transition-all cursor-pointer ${qaRoomTab === "mina"   ? "bg-[#7c3aed] text-white border-[#9061f9]" : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"}`}>📝 Mina</button>
+              </>
+            )}
+            {activeRoomId === RoomId.HELPDESK && (
+              <>
+                <button onClick={() => setHelpBotTab("momo")}        className={`px-2.5 py-1 text-[10px] font-bold rounded-lg border transition-all cursor-pointer ${helpBotTab === "momo"        ? "bg-[#e11d48] text-white border-[#f43f5e]" : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"}`}>🤖 Momo</button>
+                <button onClick={() => setHelpBotTab("screenshare")} className={`px-2.5 py-1 text-[10px] font-bold rounded-lg border transition-all cursor-pointer ${helpBotTab === "screenshare" ? "bg-[#7c3aed] text-white border-[#9061f9]" : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"}`}>🚨 Screen</button>
+              </>
+            )}
+            {activeRoomId === RoomId.LOBBY  && <span className="text-[11px] font-bold text-white">👑 CEO Room</span>}
+            {activeRoomId === RoomId.PANTRY && <span className="text-[11px] font-bold text-white">☕ Pantry</span>}
+            {activeRoomId === RoomId.FOCUS  && <span className="text-[11px] font-bold text-white">🏢 Lobby</span>}
+          </div>
+
+          {/* Panel content */}
+          <div className="flex-1 overflow-y-auto p-3">
+
             {activeRoomId === RoomId.LOBBY && (
-              <div className="bg-[#0c111d] border border-[#1e2a47] rounded-3xl p-6 shadow-xl flex gap-5 flex-col md:flex-row items-center justify-between text-left">
-                <div className="flex-1">
-                  <span className="bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[9px] font-bold px-2 py-0.5 rounded uppercase font-mono tracking-widest">CEO Strategic Command</span>
-                  <h2 className="text-sm font-extrabold text-white mt-1.5 mb-1 flex items-center gap-1.5 font-display">
-                    🚪 ห้องทำงานประธานเจ้าหน้าที่บริหาร (CEO Room)
-                  </h2>
-                  <p className="text-xs text-gray-400 leading-relaxed">
-                    ยินดีต้อนรับกลับเข้าสู่ระบบสำนักงานจำลองครับท่านประธานปลิว ขณะนี้กำลังพลคุณภาพทั้ง 3 ท่าน (ไบท์ - SA, มีนา - QA, โมโม่ - บอทมัสคอต) สแตนด์บายทำงานเสถียรรอบด้านแล้ว คุณสามารถย้ายตัวตำแหน่งไปดริปกาแฟแข่งขันในครัวแพนทรี อัพเดตงานบอร์ดโครงการ หรือปรึกษาระบบงานกับผู้เชี่ยวชาญได้โดยตรงทุกพิกัดเลยครับ!
-                  </p>
-                  
-                  {/* General welcome news log board */}
-                  <div className="bg-[#05080f] p-3.5 rounded-xl border border-slate-800 mt-4 font-mono text-[10px] text-gray-500 leading-relaxed">
-                    <strong className="text-gray-300 block mb-1 font-bold">📢 บันทึกสถานะโครงการ:</strong>
-                    - 💻 **ไบท์ (Senior-Dev/SA)**: ประจำการอยู่ที่ **SA Room (Meeting Room)** พร้อมรับคำสั่งเขียนโมดูลโค้ดและดีไซน์ API<br/>
-                    - 📝 **มีนา (Code-Reviewer/QA)**: ประจำการอยู่ที่ **QA Room (Project Room)** คอยตรวจความปลอดภัยและอัปเดตบอร์ด Kanban<br/>
-                    - 🤖 **โมโม่ (Helper-Bot)**: ประจำการที่ **Helper Desk** บอทสุดน่ารักคอยตอบคำถามและช่วยเหลือเรื่องความรู้ทั่วไป
-                  </div>
+              <div className="flex flex-col gap-3 text-left">
+                <span className="bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[9px] font-bold px-2 py-0.5 rounded uppercase font-mono tracking-widest self-start">CEO Strategic Command</span>
+                <p className="text-[11px] text-gray-400 leading-relaxed">ยินดีต้อนรับกลับ ท่านประธานปลิว ทีม AI สแตนด์บายพร้อมทำงานครบทั้ง 3 คนแล้ว</p>
+                <div className="bg-[#05080f] p-3 rounded-xl border border-slate-800 font-mono text-[10px] text-gray-500 space-y-1">
+                  <strong className="text-gray-300 block mb-1.5">📢 สถานะโครงการ:</strong>
+                  <div>💻 <span className="text-cyan-400">Byte</span> — SA Room พร้อมออกแบบระบบ</div>
+                  <div>📝 <span className="text-indigo-400">Mina</span> — QA Room พร้อมรีวิวโค้ด</div>
+                  <div>🤖 <span className="text-sky-400">Momo</span> — Help Desk พร้อมตอบคำถาม</div>
                 </div>
-
-                <div className="w-full md:w-auto flex flex-col gap-2 flex-shrink-0">
-                  <button
-                    id="btn-lobby-standup"
-                    onClick={() => handleRoomSelect(RoomId.MEETING)}
-                    className="px-4 py-2 bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer animate-pulse"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>เข้าห้อง SA สนทนา/ประชุมทีม</span>
-                  </button>
-                  <button
-                    id="btn-lobby-coffee"
-                    onClick={() => handleRoomSelect(RoomId.PANTRY)}
-                    className="px-4 py-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-gray-300 font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                  >
-                    <Coffee className="w-4 h-4 text-amber-500" />
-                    <span>เดินไปพักเบรกที่ห้องกาแฟ</span>
-                  </button>
-                </div>
+                <button id="btn-lobby-standup" onClick={() => handleRoomSelect(RoomId.MEETING)} className="px-3 py-2 bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer animate-pulse">
+                  <Plus className="w-3.5 h-3.5" /><span>เข้าห้อง SA ประชุมทีม</span>
+                </button>
+                <button id="btn-lobby-coffee" onClick={() => handleRoomSelect(RoomId.PANTRY)} className="px-3 py-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-gray-300 font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
+                  <Coffee className="w-3.5 h-3.5 text-amber-500" /><span>พักเบรกกาแฟ</span>
+                </button>
               </div>
             )}
 
             {activeRoomId === RoomId.MEETING && (
-              <div className="animate-[fadeIn_0.3s_ease-out] flex flex-col gap-4 text-left">
-                {/* Custom room header tabs */}
-                <div className="flex gap-2 border-b border-slate-800 pb-2">
-                  <button
-                    onClick={() => setSaRoomTab("group")}
-                    className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
-                      saRoomTab === "group"
-                        ? "bg-[#7c3aed] text-white border-[#9061f9]"
-                        : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"
-                    }`}
-                  >
-                    🤝 ประชุมทีมกลุ่ม (Joint Spirit Standup)
-                  </button>
-                  <button
-                    onClick={() => setSaRoomTab("byte")}
-                    className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
-                      saRoomTab === "byte"
-                        ? "bg-cyan-500 text-slate-950 border-cyan-400"
-                        : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"
-                    }`}
-                  >
-                    💬 แชทส่วนตัวกับ พี่ไบท์ (Senior-Dev / SA)
-                  </button>
-                </div>
-
-                {saRoomTab === "group" ? (
-                  <ChatPanel 
-                    characters={characters}
-                    messages={messages}
-                    activeChannel="group"
-                    onSendMessage={handleSendMessage}
-                    isGenerating={isGenerating}
-                    onClearHistory={(chan) => setMessages(prev => prev.filter(m => m.channel !== chan))}
-                    triggerVoiceSynthesis={triggerVoiceSynthesis}
-                  />
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
-                    <div className="md:col-span-8">
-                      <ChatPanel 
-                        characters={characters}
-                        messages={messages}
-                        activeChannel="senior-dev"
-                        onSendMessage={handleSendMessage}
-                        isGenerating={isGenerating}
-                        onClearHistory={(chan) => setMessages(prev => prev.filter(m => m.channel !== chan))}
-                        triggerVoiceSynthesis={triggerVoiceSynthesis}
-                      />
-                    </div>
-                    <div className="md:col-span-4 bg-[#0a111a] border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-md">
-                      <div>
-                        <div className="flex justify-between items-center mb-3">
-                          <span className="text-[9px] font-mono text-cyan-400 uppercase font-black tracking-widest">Active Server Rack Status</span>
-                          <span className="w-2 h-2 rounded-full bg-green-500 animate-ping"></span>
-                        </div>
-
-                        <div className="space-y-3 font-mono text-[10px]">
-                          <div className="p-2 border border-gray-900 bg-gray-950/60 rounded flex justify-between">
-                            <span className="text-gray-400">Main Container (Cloud Run):</span>
-                            <strong className="text-emerald-400 font-black">Healthy</strong>
-                          </div>
-                          <div className="p-2 border border-gray-900 bg-gray-950/60 rounded flex justify-between">
-                            <span className="text-gray-400">Sandbox Client Port:</span>
-                            <strong className="text-cyan-400 font-bold">Port 3000 Ingress</strong>
-                          </div>
-                          <div className="p-2 border border-gray-900 bg-gray-950/60 rounded flex justify-between">
-                            <span className="text-gray-450">Gemini LLM Pipeline:</span>
-                            <strong className="text-indigo-400 font-semibold">Ready (API)</strong>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 text-[9px] text-[#8ea7c5] leading-normal pl-1.5 border-l-2 border-orange-500/40 text-gray-500 font-mono">
-                        "งานสถาปัตยกรรมระบบออกแบบพร้อมลุยเลยครับพี่ปลิว สั่งรันเน็ตเวิร์กเชื่อมคีย์ได้ปลอดภัยและรวดเร็วเลยฮะบอส" - ไบท์ (Byte) SA AI
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
+              saRoomTab === "group"
+                ? <ChatPanel characters={characters} messages={messages} activeChannel="group" onSendMessage={handleSendMessage} isGenerating={isGenerating} onClearHistory={(chan) => setMessages(prev => prev.filter(m => m.channel !== chan))} triggerVoiceSynthesis={triggerVoiceSynthesis} />
+                : <ChatPanel characters={characters} messages={messages} activeChannel="senior-dev" onSendMessage={handleSendMessage} isGenerating={isGenerating} onClearHistory={(chan) => setMessages(prev => prev.filter(m => m.channel !== chan))} triggerVoiceSynthesis={triggerVoiceSynthesis} />
             )}
 
             {activeRoomId === RoomId.PROJECT && (
-              <div className="animate-[fadeIn_0.3s_ease-out] flex flex-col gap-4 text-left">
-                {/* Custom room header tabs */}
-                <div className="flex gap-2 border-b border-slate-800 pb-2">
-                  <button
-                    onClick={() => setQaRoomTab("kanban")}
-                    className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
-                      qaRoomTab === "kanban"
-                        ? "bg-cyan-500 text-slate-950 border-cyan-400"
-                        : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"
-                    }`}
-                  >
-                    📋 บอร์ดโครงการ (Sprint Kanban Board)
-                  </button>
-                  <button
-                    onClick={() => setQaRoomTab("mina")}
-                    className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
-                      qaRoomTab === "mina"
-                        ? "bg-[#7c3aed] text-white border-[#9061f9]"
-                        : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"
-                    }`}
-                  >
-                    📝 ตรวจริวิวตรวจสอบโค้ด (QA Review Chat with Mina)
-                  </button>
-                </div>
-
-                {qaRoomTab === "kanban" ? (
-                  <TaskBoard 
-                    tasks={tasks}
-                    characters={characters}
-                    onAddTask={handleAddTask}
-                    onUpdateTaskStatus={handleUpdateTaskStatus}
-                    onDeleteTask={handleDeleteTask}
-                  />
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
-                    <div className="md:col-span-8">
-                      <ChatPanel 
-                        characters={characters}
-                        messages={messages}
-                        activeChannel="code-reviewer"
-                        onSendMessage={handleSendMessage}
-                        isGenerating={isGenerating}
-                        onClearHistory={(chan) => setMessages(prev => prev.filter(m => m.channel !== chan))}
-                        triggerVoiceSynthesis={triggerVoiceSynthesis}
-                      />
-                    </div>
-                    <div className="md:col-span-4 bg-[#0a0f1d] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
-                      <div>
-                        <span className="text-[9px] font-mono font-bold text-[#2b96ff] uppercase tracking-widest block mb-1">Architecture Reviews</span>
-                        <h3 className="text-xs font-bold text-white mb-2 font-display">ระบบรีวิวคุณภาพโค้ดสากล (Clean Code)</h3>
-                        <ul className="space-y-2 text-[10px] leading-normal text-gray-400">
-                          <li className="flex items-start gap-1 p-1.5 bg-gray-950/40 rounded border border-gray-900">
-                            <span className="text-emerald-400 font-mono font-bold">1.</span>
-                            <span>ใช้ Type Safety หลีกเลี่ยง any และตรวจสอบ schema อย่างระมัดระวังเพื่อความเสถียร</span>
-                          </li>
-                          <li className="flex items-start gap-1 p-1.5 bg-gray-950/40 rounded border border-gray-900">
-                            <span className="text-emerald-400 font-mono font-bold">2.</span>
-                            <span>เช็ด dependencies ใน useEffect เสมอกันเกิด cyclic loops</span>
-                          </li>
-                          <li className="flex items-start gap-1 p-1.5 bg-gray-950/40 rounded border border-gray-900">
-                            <span className="text-emerald-400 font-mono font-bold">3.</span>
-                            <span>การคุมโครงสร้างห้องให้มีความกระชับ ช่วยประหยัด Token และโหลดภาพได้ไวสุด</span>
-                          </li>
-                        </ul>
-                      </div>
-
-                      <div className="mt-4 bg-[#111827] p-3 rounded-xl text-[10px] text-gray-500 italic font-mono">
-                        "งานควบคุมกระดานงานอัปเดตและตรวจบั๊กรีแอกทีฟ มีนาดูแลให้อย่างเคร่งครัดค่ะ" - มีนา (Mina) QA Analyst AI
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
+              qaRoomTab === "kanban"
+                ? <TaskBoard tasks={tasks} characters={characters} onAddTask={handleAddTask} onUpdateTaskStatus={handleUpdateTaskStatus} onDeleteTask={handleDeleteTask} />
+                : <ChatPanel characters={characters} messages={messages} activeChannel="code-reviewer" onSendMessage={handleSendMessage} isGenerating={isGenerating} onClearHistory={(chan) => setMessages(prev => prev.filter(m => m.channel !== chan))} triggerVoiceSynthesis={triggerVoiceSynthesis} />
             )}
 
-            {activeRoomId === RoomId.PANTRY && (
-              <PantryMinigame />
+            {activeRoomId === RoomId.PANTRY && <PantryMinigame />}
+
+            {activeRoomId === RoomId.FOCUS && (
+              <div className="flex flex-col gap-3 text-left">
+                <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[9px] font-bold px-2 py-0.5 rounded uppercase font-mono tracking-widest self-start">Central Lobby</span>
+                <p className="text-[11px] text-gray-400 leading-relaxed">ล็อบบี้กลางสำนักงาน — จุดนัดพบของทุกคนในทีม เดินผ่านเพื่อเข้าสู่ห้องต่างๆ</p>
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  {navItems.filter(n => n.id !== RoomId.FOCUS).map(item => (
+                    <button key={item.id} onClick={() => handleRoomSelect(item.id)}
+                      className="p-2.5 bg-[#0b101c] border border-[#151e33] rounded-xl flex items-center gap-2 hover:border-[#2b96ff]/30 transition-all cursor-pointer text-left">
+                      <span className="text-base">{item.icon}</span>
+                      <span className="text-[10px] font-bold text-gray-300">{item.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             )}
 
             {activeRoomId === RoomId.HELPDESK && (
-              <div className="animate-[fadeIn_0.3s_ease-out] flex flex-col gap-4 text-left">
-                {/* Custom room header tabs */}
-                <div className="flex gap-2 border-b border-slate-800 pb-2">
-                  <button
-                    onClick={() => setHelpBotTab("momo")}
-                    className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
-                      helpBotTab === "momo"
-                        ? "bg-[#e11d48] text-white border-[#f43f5e]"
-                        : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"
-                    }`}
-                  >
-                    🤖 ตู้อินเตอร์แอคทีฟตอบโต้ (Momo Bot Chat)
-                  </button>
-                  <button
-                    onClick={() => setHelpBotTab("screenshare")}
-                    className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
-                      helpBotTab === "screenshare"
-                        ? "bg-[#7c3aed] text-white border-[#9061f9]"
-                        : "bg-slate-950 text-gray-400 border-slate-900 hover:text-white"
-                    }`}
-                  >
-                    🚨 พอร์ทัลติดต่อ & ตัวเชื่อมทดสอบเครือข่าย
-                  </button>
-                </div>
-
-                {helpBotTab === "momo" ? (
-                  <ChatPanel 
-                    characters={characters}
-                    messages={messages}
-                    activeChannel="helper-bot"
-                    onSendMessage={handleSendMessage}
-                    isGenerating={isGenerating}
-                    onClearHistory={(chan) => setMessages(prev => prev.filter(m => m.channel !== chan))}
-                    triggerVoiceSynthesis={triggerVoiceSynthesis}
-                  />
-                ) : (
-                  <div className="bg-[#0c111d] border border-slate-800 rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col md:flex-row gap-5 items-center select-none">
-                    <div className="flex-1">
-                      <span className="px-2.5 py-0.5 bg-rose-500/15 border border-rose-500/25 text-[#f43f5e] text-[9px] font-extrabold uppercase rounded font-mono tracking-widest">Help Center Portal</span>
-                      <h2 className="text-sm font-extrabold text-white tracking-wide mt-2 mb-1 flex items-center gap-1.5 font-display">
-                        🚨 จุดตอบปัญหาฝ่ายช่วยเหลือ (Help Desk Station)
-                      </h2>
-                      <p className="text-xs text-gray-400 leading-relaxed mb-4 leading-normal">
-                        พบปัญหาตัวจำลองหรือต้องการรีวิวเครือข่ายความปลอดภัยใช่ไหมครับ? พิมพ์เพื่อโต้ตอบถามทั่วไปกับน้องบอทมัสคอต โมโม่ (Momo) ได้อย่างเป็นกันเอง หรือจะกดคลิกปุ่มเชื่อมแชร์สกรีนรีวิวของบริษัทได้ทันทีตรงนี้เลยค๊าบ!
-                      </p>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-                        <div className="p-3 bg-[#070b13] border border-slate-800 rounded-xl">
-                          <strong className="text-xs text-[#9061f9] block mb-0.5 font-mono font-bold">Mina (Code Reviewer / QA):</strong>
-                          <span className="text-[10px] text-gray-500 leading-normal block">
-                            ดูแลความคลีนของบล็อกโค้ดแอปพลิเคชัน ค้นหาบั๊กและส่อง memory loops ประจำการที่ห้อง QA
-                          </span>
-                        </div>
-
-                        <div className="p-3 bg-[#070b13] border border-slate-800 rounded-xl">
-                          <strong className="text-xs text-cyan-400 block mb-0.5 font-mono font-bold">Byte (Senior Dev / SA):</strong>
-                          <span className="text-[10px] text-gray-500 leading-normal block">
-                            ดูแลเซิร์ฟเวอร์หลัก รันไทม์พอร์ท 3000 และโมดูลหลังบ้าน ประจำการที่ห้อง SA
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="w-full md:w-auto flex-shrink-0 flex flex-col gap-2">
-                      <button
-                        id="btn-guide-screen"
-                        onClick={() => setFooterActiveTab("screenshare")}
-                        className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-md cursor-pointer"
-                      >
-                        <Tv className="w-4 h-4 animate-bounce" />
-                        <span>แชร์เน็ตเวิร์คเพื่อตรวจสอบ</span>
-                      </button>
-                    </div>
+              helpBotTab === "momo"
+                ? <ChatPanel characters={characters} messages={messages} activeChannel="helper-bot" onSendMessage={handleSendMessage} isGenerating={isGenerating} onClearHistory={(chan) => setMessages(prev => prev.filter(m => m.channel !== chan))} triggerVoiceSynthesis={triggerVoiceSynthesis} />
+                : (
+                  <div className="flex flex-col gap-3">
+                    <span className="px-2 py-0.5 bg-rose-500/15 border border-rose-500/25 text-[#f43f5e] text-[9px] font-extrabold uppercase rounded font-mono self-start">Help Center</span>
+                    <p className="text-[11px] text-gray-400 leading-relaxed">ส่งสกรีนแชร์โค้ดให้มีนารีวิวได้เลย หรือถามโมโม่บอทช่วยเหลือทั่วไป</p>
+                    <button id="btn-guide-screen" onClick={() => setFooterActiveTab("screenshare")} className="px-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
+                      <Tv className="w-3.5 h-3.5 animate-bounce" /><span>Screen Share Audit</span>
+                    </button>
                   </div>
-                )}
+                )
+            )}
+
+          </div>
+        </div>
+
+      </div>
+
+      {/* ══ BOTTOM BAR ══════════════════════════════════════════════════════ */}
+      <footer className="flex-shrink-0 h-12 bg-[#090d16] border-t border-[#151e33] flex items-center px-4 gap-3 z-30 relative overflow-visible">
+
+        {/* Toolbar tabs */}
+        <div className="flex items-center gap-0.5 bg-[#0b101c] border border-[#1d2b48] rounded-xl p-1 flex-shrink-0">
+          <button id="footer-tab-chat" onClick={() => { setFooterActiveTab(null); handleRoomSelect(RoomId.MEETING); }} className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1.5 cursor-pointer ${activeRoomId === RoomId.MEETING && !footerActiveTab ? "text-[#2b96ff] bg-[#2b96ff]/10" : "text-gray-400 hover:text-white"}`}>
+            <MessageSquare className="w-3.5 h-3.5" /><span className="font-mono">Chat</span>
+            <span className="bg-red-500 text-white rounded-full w-3.5 h-3.5 text-[7px] flex items-center justify-center font-bold">2</span>
+          </button>
+          <button id="footer-tab-people" onClick={() => setFooterActiveTab(footerActiveTab === "people" ? null : "people")} className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1.5 cursor-pointer ${footerActiveTab === "people" ? "text-emerald-400 bg-emerald-500/10" : "text-gray-400 hover:text-white"}`}>
+            <Users className="w-3.5 h-3.5" /><span className="font-mono">People</span>
+          </button>
+          <button id="footer-tab-calendar" onClick={() => setFooterActiveTab(footerActiveTab === "calendar" ? null : "calendar")} className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1.5 cursor-pointer ${footerActiveTab === "calendar" ? "text-emerald-400 bg-emerald-500/10" : "text-gray-400 hover:text-white"}`}>
+            <Calendar className="w-3.5 h-3.5" /><span className="font-mono">Calendar</span>
+          </button>
+          <button id="footer-tab-screenshare" onClick={() => setFooterActiveTab(footerActiveTab === "screenshare" ? null : "screenshare")} className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1.5 cursor-pointer ${footerActiveTab === "screenshare" ? "text-[#2b96ff] bg-[#2b96ff]/10" : "text-gray-400 hover:text-white"}`}>
+            <Tv className="w-3.5 h-3.5" /><span className="font-mono">Screen</span>
+          </button>
+          <button id="footer-tab-more" onClick={() => setFooterActiveTab(footerActiveTab === "more" ? null : "more")} className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1.5 cursor-pointer ${footerActiveTab === "more" ? "text-cyan-400 bg-[#22d3ee]/15" : "text-gray-400 hover:text-white"}`}>
+            <MoreHorizontal className="w-3.5 h-3.5" /><span className="font-mono">More</span>
+          </button>
+        </div>
+
+        <div className="w-px h-6 bg-[#1e2a44] flex-shrink-0"></div>
+
+        {/* Character status chips */}
+        <div className="flex items-center gap-2 overflow-x-auto">
+          {characters.map(char => (
+            <button key={char.id} onClick={() => { handleRoomSelect(char.currentRoom); if (char.id !== "user") triggerSpeechBubble(char.id, char.greetingTh); }}
+              className="flex items-center gap-1.5 bg-[#0b101c] border border-[#151e33] rounded-lg px-2.5 py-1 hover:border-[#2b96ff]/30 transition-all cursor-pointer flex-shrink-0">
+              <img src={char.avatarUrl} alt={char.name} className="w-4 h-4 rounded-full object-cover" referrerPolicy="no-referrer" />
+              <span className="text-[9.5px] font-mono font-bold text-gray-300">{char.id === "user" ? "You" : char.name}</span>
+              <span className={`w-1.5 h-1.5 rounded-full ${char.statusColor}`}></span>
+            </button>
+          ))}
+        </div>
+
+        {/* Popover drawers — float above footer */}
+        {footerActiveTab && (
+          <div className="absolute bottom-full left-4 mb-2 z-50 w-[500px] max-w-[calc(100vw-2rem)]">
+            {footerActiveTab === "people" && (
+              <div className="bg-[#0b101c] border border-[#1e2a44] rounded-2xl p-4 shadow-2xl animate-[slideUp_0.2s_ease-out]">
+                <h3 className="text-xs font-extrabold text-white mb-3 uppercase tracking-wide flex items-center gap-1.5"><Info className="w-4 h-4 text-emerald-400" />ผู้เชี่ยวชาญ AI ของออฟฟิศ</h3>
+                <div className="grid grid-cols-2 gap-3 text-[10px] font-mono">
+                  <div className="p-3 bg-[#05080f] rounded-xl border border-slate-900"><strong className="text-xs text-white block mb-1">🔧 Mina (QA & Reviewer)</strong><p className="text-slate-500">ตรวจคุณภาพโค้ด ค้นหาบั๊ก ประจำการที่ห้อง QA</p></div>
+                  <div className="p-3 bg-[#05080f] rounded-xl border border-slate-900"><strong className="text-xs text-white block mb-1">💻 Byte (Developer & SA)</strong><p className="text-slate-500">ดูแลระบบ รันไทม์พอร์ต 3000 ประจำการที่ห้อง SA</p></div>
+                </div>
+              </div>
+            )}
+            {footerActiveTab === "calendar" && (
+              <div className="bg-[#0b101c] border border-[#1d2b48] rounded-2xl p-4 shadow-2xl animate-[slideUp_0.2s_ease-out]">
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="text-xs font-extrabold text-white flex items-center gap-1.5">📅 อัพเดทตารางกิจกรรมวันนี้</h3>
+                  <span className="text-[9px] font-mono text-green-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">3 Events</span>
+                </div>
+                <ul className="space-y-2">
+                  {events.map((evt: CalendarEvent) => (
+                    <li key={evt.id} className="p-2.5 bg-gray-950 rounded-xl border border-slate-900 flex justify-between items-start">
+                      <div><span className="text-[10px] font-bold text-[#9edcfe] block">{evt.title}</span><span className="text-[9px] text-slate-500">{evt.description}</span></div>
+                      <span className="text-[9px] font-mono font-bold text-[#2b96ff] bg-[#2b96ff]/10 px-2 py-0.5 border border-[#2b96ff]/20 rounded ml-2 flex-shrink-0">{evt.time}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {footerActiveTab === "screenshare" && (
+              <div className="bg-slate-950/95 rounded-2xl border border-slate-800 p-1 animate-[slideUp_0.2s_ease-out]">
+                <ScreenShareHub characters={characters} onTriggerAudit={handleTriggerAudit} isGenerating={isGenerating} auditReport={auditReport} />
+              </div>
+            )}
+            {footerActiveTab === "more" && (
+              <div className="bg-[#0b101c] border border-[#1d2b48] rounded-2xl p-4 shadow-2xl animate-[slideUp_0.2s_ease-out] space-y-3">
+                <h3 className="text-xs font-black text-white uppercase tracking-wide flex items-center gap-1.5"><Settings className="w-4 h-4 text-cyan-400" />Configure Office Sandbox</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 bg-slate-950 rounded-xl border border-[#141d33] flex flex-col gap-2">
+                    <strong className="text-amber-400 font-mono text-[10.5px]">☕ Drip Coffee Minigame</strong>
+                    <button onClick={() => { setFooterActiveTab(null); handleRoomSelect(RoomId.PANTRY); }} className="py-1.5 bg-[#cc971c] hover:bg-[#b58514] text-slate-950 font-bold text-[9.5px] rounded-lg cursor-pointer">LAUNCH</button>
+                  </div>
+                  <div className="p-3 bg-slate-950 rounded-xl border border-[#141d33] flex flex-col gap-2">
+                    <strong className="text-[#38bdf8] font-mono text-[10.5px]">🗣️ Text To Speech</strong>
+                    <button onClick={() => setIsMuted(!isMuted)} className={`py-1.5 font-bold text-[9.5px] rounded-lg border cursor-pointer ${isMuted ? "bg-slate-900 border-[#1e2a44] text-[#38bdf8]" : "bg-[#0284c7] border-white/20 text-white"}`}>{isMuted ? "ENABLE VOICE" : "MUTE VOICE"}</button>
+                  </div>
+                </div>
+                <div className="text-[8.5px] text-slate-500 space-y-0.5 border-t border-[#131b2c] pt-2">
+                  <div>● <strong className="text-emerald-400">API:</strong> SANDBOX SIMULATION ACTIVE</div>
+                  <div>● <strong className="text-cyan-400">Stack:</strong> React 19 + Express · Port 3000</div>
+                </div>
+              </div>
+            )}
+            {footerActiveTab === "settings" && (
+              <div className="bg-[#0b101c] border border-[#1d2b48] rounded-2xl p-4 shadow-2xl animate-[slideUp_0.2s_ease-out]">
+                <h3 className="text-xs font-black text-white uppercase tracking-wide mb-3 flex items-center gap-1.5"><Settings className="w-4 h-4 text-cyan-400" />API Configuration</h3>
+                <div className="text-[10px] text-gray-400 space-y-2 font-mono">
+                  <div className="p-2 bg-slate-950 rounded border border-slate-800">Set <span className="text-emerald-400">GEMINI_API_KEY</span> in .env to enable real AI responses.</div>
+                  <div className="p-2 bg-slate-950 rounded border border-slate-800">Currently: <span className="text-amber-400">sandbox / simulation mode</span></div>
+                </div>
               </div>
             )}
           </div>
+        )}
 
-          {/* ==================== 3. GLOBAL INTERACTIVE FLOATING TOOLBAR DOCK ==================== */}
-          <footer className="w-full mt-auto py-2 z-40 relative">
-            <div className="max-w-xl mx-auto">
-              <div className="bg-[#0b101c]/95 border border-[#1d2b48] p-2 rounded-2xl flex justify-between items-center shadow-[0_20px_45px_rgba(0,0,0,0.7)] relative z-40 backdrop-blur-md">
-                
-                {/* 1. CHAT TAB (Triggers teleport to Meeting/Chat panel as seen in screenshot) */}
-                <button
-                  id="footer-tab-chat"
-                  onClick={() => {
-                    setFooterActiveTab(null);
-                    handleRoomSelect(RoomId.MEETING);
-                  }}
-                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition-all flex flex-col items-center gap-1.5 relative cursor-pointer ${
-                    activeRoomId === RoomId.MEETING && !footerActiveTab 
-                      ? "text-[#2b96ff] bg-[#2b96ff]/10" 
-                      : "text-gray-400 hover:text-white"
-                  }`}
-                >
-                  <div className="relative">
-                    <MessageSquare className="w-5 h-5 text-gray-400 hover:text-[#2b96ff] transition-colors" />
-                    <span className="absolute -top-1 -right-1.5 bg-red-500 text-white rounded-full w-4 h-4 text-[8px] flex items-center justify-center font-bold font-mono border border-slate-950 shadow-md">2</span>
-                  </div>
-                  <span className="text-[10px] leading-none font-mono">Chat</span>
-                </button>
+      </footer>
 
-                {/* 2. PEOPLE TAB (Welfare info popover drawer) */}
-                <button
-                  id="footer-tab-people"
-                  onClick={() => setFooterActiveTab(footerActiveTab === "people" ? null : "people")}
-                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition-all flex flex-col items-center gap-1.5 cursor-pointer ${
-                    footerActiveTab === "people" ? "text-emerald-400 bg-emerald-500/10" : "text-gray-400 hover:text-white"
-                  }`}
-                >
-                  <Users className="w-5 h-5 text-gray-400 hover:text-emerald-400 transition-colors" />
-                  <span className="text-[10px] leading-none font-mono">People</span>
-                </button>
-
-                {/* 3. CALENDAR TAB (Schedule list drawer) */}
-                <button
-                  id="footer-tab-calendar"
-                  onClick={() => setFooterActiveTab(footerActiveTab === "calendar" ? null : "calendar")}
-                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition-all flex flex-col items-center gap-1.5 cursor-pointer ${
-                    footerActiveTab === "calendar" ? "text-emerald-400 bg-emerald-500/10" : "text-gray-400 hover:text-white"
-                  }`}
-                >
-                  <Calendar className="w-5 h-5 text-gray-400 hover:text-emerald-400 transition-colors" />
-                  <span className="text-[10px] leading-none font-mono">Calendar</span>
-                </button>
-
-                {/* 4. SCREEN SHARE TAB (React Code Auditor module) */}
-                <button
-                  id="footer-tab-screenshare"
-                  onClick={() => setFooterActiveTab(footerActiveTab === "screenshare" ? null : "screenshare")}
-                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition-all flex flex-col items-center gap-1.5 cursor-pointer ${
-                    footerActiveTab === "screenshare" ? "text-[#2b96ff] bg-[#2b96ff]/10" : "text-gray-400 hover:text-white"
-                  }`}
-                >
-                  <Tv className="w-5 h-5 text-gray-400 hover:text-[#2b96ff] transition-colors" />
-                  <span className="text-[10px] leading-none font-mono">Screen Share</span>
-                </button>
-                
-                {/* 5. MORE TAB (Triple horizontal dot dropdown - supports game launch, mute controls & configurations) */}
-                <button
-                   id="footer-tab-more"
-                   onClick={() => setFooterActiveTab(footerActiveTab === "more" ? null : "more")}
-                   className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition-all flex flex-col items-center gap-1.5 cursor-pointer ${
-                     footerActiveTab === "more" ? "text-cyan-400 bg-[#22d3ee]/15" : "text-gray-400 hover:text-white"
-                   }`}
-                >
-                  <MoreHorizontal className="w-5 h-5 text-gray-400 hover:text-cyan-400 transition-colors" />
-                  <span className="text-[10px] leading-none font-mono">More</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Floating Drawer Inner Elements */}
-            <div className="max-w-xl mx-auto mt-3">
-              {footerActiveTab === "people" && (
-                <div className="bg-[#0b101c] border border-[#1e2a44] rounded-2xl p-5 shadow-2xl relative z-40 animate-[slideUp_0.25s_ease-out]">
-                  <h3 className="text-xs font-extrabold text-white mb-3 uppercase tracking-wide flex items-center gap-1.5 text-left">
-                    <Info className="w-4 h-4 text-emerald-400" />
-                    <span className="font-display font-bold">ผู้เชี่ยวชาญ AI ของออฟฟิศ</span>
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-[10px]">
-                    <div className="p-3.5 bg-[#05080f] rounded-xl border border-slate-900">
-                      <div className="flex gap-2 mb-2 text-left">
-                        <span className="text-xl">🔧</span>
-                        <div>
-                          <strong className="text-xs font-bold text-white block leading-none text-left">Mina (QA & Reviewer)</strong>
-                          <span className="text-[8px] font-mono text-indigo-400 font-bold uppercase mt-1 block">Security & Code Auditor AI</span>
-                        </div>
-                      </div>
-                      <p className="text-[10px] text-slate-500 leading-normal text-left">
-                        ดูแลคุณภาพความเสถียรของแอป ค้นหาช่องโหว่ความเสถียร จัดการ Hook checks สังเคราะห์วิจัยร่วมกับโมเดล Gemini
-                      </p>
-                    </div>
-
-                    <div className="p-3.5 bg-[#05080f] rounded-xl border border-slate-900">
-                      <div className="flex gap-2 mb-2 text-left">
-                        <span className="text-xl">💻</span>
-                        <div>
-                          <strong className="text-xs font-bold text-white block leading-none text-left">Byte (Developer & SA)</strong>
-                          <span className="text-[8px] font-mono text-cyan-400 font-bold uppercase mt-1 block">Vite & React Fullstack AI</span>
-                        </div>
-                      </div>
-                      <p className="text-[10px] text-slate-500 leading-normal text-left">
-                        ดูแลการเขียนฟังก์ชัน จัดการคีย์ ลิงก์ระบบจำลอง รันไทม์พอร์ต 3000 และคอยส่งสตรีมมิ่งเขียนโค้ดหลังบ้านให้ประธานตลอดยี่สิบสี่ชั่วโมง
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {footerActiveTab === "calendar" && (
-                <div className="bg-[#0b101c] border border-[#1d2b48] rounded-2xl p-5 shadow-2xl relative z-40 animate-[slideUp_0.25s_ease-out]">
-                  <div className="flex justify-between items-center mb-3">
-                    <h3 className="text-xs font-extrabold text-white uppercase tracking-wide flex items-center gap-1.5 text-left">
-                      <span>📅 อัพเดทตารางกิจกรรมวันนี้</span>
-                    </h3>
-                    <span className="text-[9px] font-mono text-green-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">3 Events Active</span>
-                  </div>
-                  <ul className="space-y-2.5">
-                    {events.map((evt: CalendarEvent) => (
-                      <li key={evt.id} className="p-3 bg-gray-950 rounded-xl border border-slate-900 flex justify-between items-start">
-                        <div className="leading-tight text-left">
-                          <span className="text-[10.5px] font-extrabold text-[#9edcfe] block">{evt.title}</span>
-                          <span className="text-[9.5px] text-slate-500 block mt-1">{evt.description}</span>
-                        </div>
-                        <span className="text-[9px] font-mono font-bold text-[#2b96ff] flex-shrink-0 bg-[#2b96ff]/10 px-2 py-0.5 border border-[#2b96ff]/20 rounded ml-2">
-                          {evt.time}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {footerActiveTab === "screenshare" && (
-                <div className="relative z-40 bg-slate-950/40 rounded-2xl border border-slate-800/80 p-1 animate-[slideUp_0.25s_ease-out]">
-                  <ScreenShareHub 
-                    characters={characters}
-                    onTriggerAudit={handleTriggerAudit}
-                    isGenerating={isGenerating}
-                    auditReport={auditReport}
-                  />
-                </div>
-              )}
-
-              {footerActiveTab === "more" && (
-                <div className="bg-[#0b101c] border border-[#1d2b48] rounded-2xl p-5 shadow-2xl relative z-45 font-mono text-[10px] text-gray-400 leading-relaxed text-left animate-[slideUp_0.25s_ease-out] space-y-4">
-                  <div>
-                    <h3 className="text-xs font-black text-white uppercase tracking-wide mb-2.5 font-display flex items-center gap-1.5 text-left">
-                      <Settings className="w-4 h-4 text-cyan-400" />
-                      <span>Configure Office Sandbox</span>
-                    </h3>
-                    <p className="text-[10px] text-slate-400 leading-normal mb-3 text-left">
-                      เมนูควบคุมส่วนกลางสำหรับตั้งค่าพฤติกรรม และเปิดใช้งานฟีเจอร์ย่อยของแอปพลิเคชัน
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-2 select-none">
-                    
-                    {/* Launch Coffee mini-game widget */}
-                    <div className="p-3 bg-slate-950 rounded-xl border border-[#141d33] flex flex-col justify-between gap-2.5 text-left">
-                      <div>
-                        <strong className="text-amber-400 font-mono text-[10.5px] block">☕ Drip Coffee Minigame</strong>
-                        <span className="text-[9px] text-gray-500 leading-tight block mt-1">
-                          จำลองร้านกาแฟในห้องเครื่องครัว วืดรับเมล็ดกาแฟ เพื่อปลดล็อคพลังสมอง
-                        </span>
-                      </div>
-                      <button 
-                        onClick={() => {
-                          setFooterActiveTab(null);
-                          handleRoomSelect(RoomId.PANTRY);
-                        }}
-                        className="w-full text-center py-1.5 bg-[#cc971c] hover:bg-[#b58514] text-slate-950 font-bold text-[9.5px] rounded-lg border border-slate-950 cursor-pointer transition-colors"
-                      >
-                        LAUNCH COFFEE MINI-GAME
-                      </button>
-                    </div>
-
-                    {/* Speech engine synthesis parameters */}
-                    <div className="p-3 bg-slate-950 rounded-xl border border-[#141d33] flex flex-col justify-between gap-2.5 text-left">
-                      <div>
-                        <strong className="text-[#38bdf8] font-mono text-[10.5px] block">🗣️ Text To Speech Engine</strong>
-                        <span className="text-[9px] text-gray-500 leading-tight block mt-1">
-                          เปิดหรือปิดผู้สังเคราะห์เสียงอัตนัยเมื่อพนักงานให้การสัมภาษณ์ความก้าวหน้า
-                        </span>
-                      </div>
-                      <button 
-                        onClick={() => {
-                          setIsMuted(!isMuted);
-                        }}
-                        className={`w-full text-center py-1.5 font-bold text-[9.5px] rounded-lg border cursor-pointer transition-colors ${
-                          isMuted 
-                            ? "bg-slate-900 border-[#1e2a44] text-[#38bdf8] hover:bg-slate-800" 
-                            : "bg-[#0284c7] hover:bg-[#0274ad] border-white/20 text-white"
-                        }`}
-                      >
-                        {isMuted ? "ENABLE SPEECH SYNTHESIS" : "MUTED SPEECH ENGINE"}
-                      </button>
-                    </div>
-
-                  </div>
-
-                  {/* Port and Pipeline diagnostic specifications banner */}
-                  <div className="pt-3 border-t border-[#131b2c] text-[8.5px] text-slate-500 space-y-1 text-left">
-                    <div>- <strong className="text-emerald-400 font-bold">Gemini Key API status:</strong> {process.env.GEMINI_API_KEY ? "SECURED (ใช้งานผ่าน Proxy Backend)" : "SANDBOX SIMULATION ACTIVE"}</div>
-                    <div>- <strong className="text-cyan-400 font-bold">Workspace pipeline:</strong> Built on React 19 + Express Server live on Port 3000</div>
-                    <div>- <strong className="text-purple-400 font-bold">Model transit code:</strong> gemini-2.5-flash secure socket layers compliant</div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </footer>
-
-        </main>
-      </div>
     </div>
   );
 }

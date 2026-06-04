@@ -1,6 +1,12 @@
 import { Room, RoomId, Character, OfficeTask, CalendarEvent } from "./types";
 // @ts-ignore
-import ceoSpriteImg from "./assets/images/ceo_sprite_1780479445026.png";
+import charCeo  from "./assets/images/char_ceo.png";
+// @ts-ignore
+import charByte from "./assets/images/char_byte.png";
+// @ts-ignore
+import charMina from "./assets/images/char_mina.png";
+// @ts-ignore
+import charMomo from "./assets/images/char_momo.png";
 
 export const OFFICE_ROOMS: Room[] = [
   {
@@ -52,6 +58,16 @@ export const OFFICE_ROOMS: Room[] = [
     color: "bg-orange-500/10 border-orange-500/40 text-orange-400",
     bgGradient: "from-amber-950/15 to-orange-950/15",
     coordinates: { x: 67, y: 52, width: 28, height: 43 }
+  },
+  {
+    id: RoomId.FOCUS,
+    nameEn: "Lobby",
+    nameTh: "ล็อบบี้กลาง",
+    descriptionEn: "Central lobby — meeting point for the whole team.",
+    descriptionTh: "ล็อบบี้กลางสำนักงาน จุดนัดพบของทีม",
+    color: "bg-emerald-500/10 border-emerald-500/40 text-emerald-400",
+    bgGradient: "from-emerald-950/15 to-teal-950/15",
+    coordinates: { x: 29, y: 20, width: 34, height: 44 }
   }
 ];
 
@@ -67,7 +83,7 @@ export const INITIAL_CHARACTERS: Character[] = [
     status: "Online",
     statusColor: "bg-green-500",
     isAi: false,
-    avatarUrl: ceoSpriteImg,
+    avatarUrl: charCeo,
     greetingTh: "สวัสดีทุกคน ยินดีต้อนรับสู่ออฟฟิศพิกเซล วันนี้โมโม่ ไบท์ และมีนา สแตนด์บายพร้อมร่วมงานกับพี่ปลิวแล้วครับ!",
     greetingEn: "Hello everyone, welcome back to the pixel office. Momo, Byte, and Mina are ready to build together today!"
   },
@@ -82,7 +98,7 @@ export const INITIAL_CHARACTERS: Character[] = [
     status: "Coding",
     statusColor: "bg-cyan-400",
     isAi: true,
-    avatarUrl: "https://api.dicebear.com/7.x/pixel-art/svg?seed=byte&backgroundColor=c0aede",
+    avatarUrl: charByte,
     greetingTh: "กำลังเซ็ตรันไทม์และพัฒนาตัวระบบอยู่ครับพี่ปลิว มีฟีเจอร์ไหนอยากให้ไบท์ลุยสั่งแชทมาได้เลยฮะ!",
     greetingEn: "Optimizing Vite client-side and working on core backend routes. Ask me anything, boss!"
   },
@@ -97,7 +113,7 @@ export const INITIAL_CHARACTERS: Character[] = [
     status: "Coding",
     statusColor: "bg-indigo-400",
     isAi: true,
-    avatarUrl: "https://api.dicebear.com/7.x/pixel-art/svg?seed=mina&backgroundColor=ffd5dc",
+    avatarUrl: charMina,
     greetingTh: "มีนาสแตนบายค่ะ มั่นใจในคุณภาพโค้ดและความปลอดภัยได้เลยนะคะ มีโค้ดเซกเมนต์ไหนอยากให้ช่วยดีเทลรีวิว ส่งแชทมาสกรีนเจอร์ได้เลยค่ะ",
     greetingEn: "Ready to scan security aspects and double-check refactors. Share code on screenshare or chat anytime, boss!"
   },
@@ -112,7 +128,7 @@ export const INITIAL_CHARACTERS: Character[] = [
     status: "Online",
     statusColor: "bg-sky-400",
     isAi: true,
-    avatarUrl: "https://api.dicebear.com/7.x/pixel-art/svg?seed=momo&backgroundColor=cbd5e1",
+    avatarUrl: charMomo,
     greetingTh: "ปิ๊บๆ! โมโม่พร้อมช่วยงานแล้วค๊าบพี่ปลิว! อยากคิวรี่หรือสแกนบั๊ก มีโมโม่ข้างๆ อุ่นใจแน่นอน ปิ๊บบุ๊!",
     greetingEn: "Beep beep! Momo is active at the helpdesk, ready to provide tips, shortcuts, and moral support, boss!"
   }

@@ -3,9 +3,22 @@ import { motion, AnimatePresence } from "motion/react";
 import { Room, RoomId, Character } from "../types";
 import { OFFICE_ROOMS } from "../data";
 // @ts-ignore
-import officeMapImg from "../assets/images/office_map_1780459713188.png";
+import officeMapImg from "../assets/images/office_map_v3.png";
 // @ts-ignore
-import ceoSpriteImg from "../assets/images/ceo_sprite_1780479445026.png";
+import charCeo  from "../assets/images/char_ceo.png";
+// @ts-ignore
+import charByte from "../assets/images/char_byte.png";
+// @ts-ignore
+import charMina from "../assets/images/char_mina.png";
+// @ts-ignore
+import charMomo from "../assets/images/char_momo.png";
+
+const CHARACTER_MODELS: Record<string, string> = {
+  "user":           charCeo,
+  "senior-dev":     charByte,
+  "code-reviewer":  charMina,
+  "helper-bot":     charMomo,
+};
 import { 
   Coffee, 
   Terminal, 
@@ -45,313 +58,33 @@ const getCharacterTagColor = (id: string, defaultColor: string) => {
   }
 };
 
-// Configurator helper to map characters to rich custom pixel sprite details
-const getPixelSpriteData = (id: string) => {
-  switch (id) {
-    case "user":
-      return {
-        hair: "#2b1810", // Deep dark brown hair
-        skin: "#fed7aa", // Light peach skin
-        shirt: "#0f172a", // Smart blazer
-        pants: "#1e293b", // Coordinated trousers
-        gender: "m",
-        hasCrown: false,
-        hasGlasses: true,
-        hasTie: true,
-        hasBeard: false,
-        hasHeadphones: false,
-        hasHairBow: false,
-        hasPigtails: false,
-        hasPonytail: false,
-        isRobot: false,
-      };
-    case "senior-dev":
-      return {
-        hair: "#8b5cf6", // Vibrant purple hair for Byte
-        skin: "#fef08a", // Light skin
-        shirt: "#1e1b4b", // Dark hoodie
-        pants: "#312e81", // Indigo trousers
-        gender: "m",
-        hasCrown: false,
-        hasGlasses: false,
-        hasTie: false,
-        hasBeard: false,
-        hasHeadphones: true,
-        hasHairBow: false,
-        hasPigtails: false,
-        hasPonytail: false,
-        isRobot: false,
-      };
-    case "code-reviewer":
-      return {
-        hair: "#06b6d4", // Electric cyan hair for Mina
-        skin: "#ffd5dc", // Pinkish porcelain skin
-        shirt: "#1d4ed8", // Smart blue top
-        pants: "#1e3a8a", // Skirt
-        gender: "f",
-        hasCrown: false,
-        hasGlasses: true,
-        hasTie: false,
-        hasBeard: false,
-        hasHeadphones: false,
-        hasHairBow: true,
-        hasPigtails: false,
-        hasPonytail: true,
-        isRobot: false,
-      };
-    case "helper-bot":
-      return {
-        hair: "",
-        skin: "",
-        shirt: "",
-        pants: "",
-        gender: "robot",
-        hasCrown: false,
-        hasGlasses: false,
-        hasTie: false,
-        hasBeard: false,
-        hasHeadphones: false,
-        hasHairBow: false,
-        hasPigtails: false,
-        hasPonytail: false,
-        isRobot: true,
-      };
-    default:
-      return {
-        hair: "#475569",
-        skin: "#fed7aa",
-        shirt: "#334155",
-        pants: "#111827",
-        gender: "m",
-        hasCrown: false,
-        hasGlasses: false,
-        hasTie: false,
-        hasBeard: false,
-        hasHeadphones: false,
-        hasHairBow: false,
-        hasPigtails: false,
-        hasPonytail: false,
-        isRobot: false,
-      };
-  }
+// Glow color per character
+const CHAR_GLOW: Record<string, string> = {
+  "user":          "rgba(16,185,129,0.5)",
+  "senior-dev":    "rgba(139,92,246,0.5)",
+  "code-reviewer": "rgba(59,130,246,0.5)",
+  "helper-bot":    "rgba(14,165,233,0.5)",
 };
 
-// Beautiful vector SVG component delivering sharp, high-fidelity standing pixel-art sprites
+// Character sprite using actual PNG model images
 const PixelSprite = ({ id }: { id: string }) => {
-  const spec = getPixelSpriteData(id);
-
-  if (id === "user") {
-    return (
-      <div className="relative w-16 h-16 flex items-center justify-center select-none" style={{ transformStyle: "preserve-3d" }}>
-        {/* Ground oval shadow */}
-        <div className="absolute bottom-[2px] left-1/2 -translate-x-1/2 w-[34px] h-[9px] bg-black/45 rounded-full filter blur-[1px] pointer-events-none z-0"></div>
-        <img 
-          src={ceoSpriteImg} 
-          className="w-16 h-16 object-contain z-10 animate-sprite-bob" 
-          alt="CEO Sprite"
-          referrerPolicy="no-referrer"
-          style={{ imageRendering: "pixelated" }}
-        />
-      </div>
-    );
-  }
-
-  if (spec.isRobot) {
-    return (
-      <div className="relative w-11 h-[68px] flex items-center justify-center select-none">
-        {/* Ground oval shadow */}
-        <div className="absolute bottom-[2px] left-1/2 -translate-x-1/2 w-[34px] h-[9px] bg-black/45 rounded-full filter blur-[0.6px] pointer-events-none z-0"></div>
-
-        <svg 
-          width="100%" 
-          height="100%" 
-          viewBox="0 0 16 24" 
-          className="rendering-pixelated z-10 animate-sprite-bob"
-          style={{ imageRendering: "pixelated" }}
-        >
-          {/* Antenna */}
-          <rect x="7.5" y="1.5" width="1" height="3.5" fill="#64748b" />
-          <rect x="7" y="0.5" width="2" height="1" fill="#ec4899" />
-
-          {/* Robot Head / Body Capsule */}
-          <rect x="3.5" y="5" width="9" height="15" fill="#0284c7" rx="3" />
-          <rect x="4.5" y="6" width="7" height="13" fill="#e0f2fe" rx="2" />
-
-          {/* Visor Area */}
-          <rect x="4.5" y="7" width="7" height="4" fill="#1e293b" />
-          {/* Beaming Blue Eyes inside visor */}
-          <rect x="5.5" y="8" width="1.5" height="1.5" fill="#38bdf8" />
-          <rect x="9" y="8" width="1.5" height="1.5" fill="#38bdf8" />
-
-          {/* Cheek Pink lights */}
-          <rect x="5" y="9.5" width="1" height="0.5" fill="#f43f5e" />
-          <rect x="10" y="9.5" width="1" height="0.5" fill="#f43f5e" />
-
-          {/* Cute Metal Speaker / Mouth */}
-          <rect x="7.5" y="9.5" width="1" height="1" fill="#475569" />
-
-          {/* Screen with glowing heart on Chest */}
-          <rect x="6" y="13" width="4" height="4" fill="#38bdf8" opacity="0.8" />
-          <rect x="7.5" y="14" width="1" height="1" fill="#ec4899" />
-          <rect x="6.5" y="13.5" width="1" height="1" fill="#ec4899" />
-          <rect x="8.5" y="13.5" width="1" height="1" fill="#ec4899" />
-          <rect x="7" y="14.5" width="2" height="1" fill="#ec4899" />
-          <rect x="7.5" y="15.5" width="1" height="1" fill="#ec4899" />
-
-          {/* Floater Base Jet / Bottom plate */}
-          <rect x="5" y="20.5" width="6" height="1" fill="#475569" />
-          <rect x="6" y="21.5" width="4" height="1" fill="#f59e0b" className="animate-pulse" />
-        </svg>
-      </div>
-    );
-  }
-
-  const hair = spec.hair;
-  const skin = spec.skin;
-  const shirt = spec.shirt;
-  const pants = spec.pants;
+  const modelImg = CHARACTER_MODELS[id];
+  const glow = CHAR_GLOW[id] ?? "rgba(255,255,255,0.2)";
 
   return (
-    <div className="relative w-11 h-[68px] flex items-center justify-center select-none">
+    <div className="relative flex items-center justify-center select-none" style={{ width: 88, height: 88 }}>
       {/* Ground oval shadow */}
-      <div className="absolute bottom-[2px] left-1/2 -translate-x-1/2 w-[34px] h-[9px] bg-black/45 rounded-full filter blur-[0.6px] pointer-events-none z-0"></div>
-
-      <svg 
-        width="100%" 
-        height="100%" 
-        viewBox="0 0 16 24" 
-        className="rendering-pixelated z-10 animate-sprite-bob"
-        style={{ imageRendering: "pixelated" }}
-      >
-        {/* CROWN FOR CEO ("user") */}
-        {spec.hasCrown && (
-          <>
-            <rect x="5" y="1" width="6" height="1" fill="#fbbf24" />
-            <rect x="5" y="0" width="1" height="1" fill="#f59e0b" />
-            <rect x="7" y="0" width="2" height="1" fill="#f59e0b" />
-            <rect x="10" y="0" width="1" height="1" fill="#f59e0b" />
-            <rect x="5" y="1" width="1" height="1" fill="#ef4444" />
-            <rect x="10" y="1" width="1" height="1" fill="#3b82f6" />
-          </>
-        )}
-
-        {/* HAIR BASE BACKING */}
-        <rect x="5" y="4" width="6" height="3" fill={hair} />
-        <rect x="4" y="5" width="8" height="1.5" fill={hair} />
-
-        {/* HEAD SKIN BASE */}
-        <rect x="5" y="5.5" width="6" height="5" fill={skin} />
-
-        {/* Hair Front Bangs */}
-        <rect x="5" y="4.5" width="6" height="1" fill={hair} />
-        <rect x="4.5" y="5" width="1.5" height="1.5" fill={hair} />
-        <rect x="10" y="5" width="1.5" height="1.5" fill={hair} />
-
-        {/* EYES */}
-        <rect x="6" y="7.5" width="1" height="1" fill="#111827" />
-        <rect x="9" y="7.5" width="1" height="1" fill="#111827" />
-
-        {/* MOUTH / BLUSHES */}
-        <rect x="7.5" y="9.5" width="1" height="0.5" fill="#111827" />
-        <rect x="5.5" y="8.5" width="1" height="0.5" fill="#f43f5e" opacity="0.6" />
-        <rect x="9.5" y="8.5" width="1" height="0.5" fill="#f43f5e" opacity="0.6" />
-
-        {/* GENDER & ACCESORIES SPECIFICS */}
-        {spec.gender === "f" && (
-          <>
-            {/* Long strands / Ponytail for Mina */}
-            <rect x="4" y="6" width="1" height="5" fill={hair} />
-            <rect x="11" y="6" width="1" height="5" fill={hair} />
-            {spec.hasPonytail && (
-              <>
-                <rect x="2.5" y="5.5" width="2" height="4" fill={hair} />
-                <rect x="1.5" y="6.5" width="1.5" height="4.5" fill={hair} />
-              </>
-            )}
-            {spec.hasPigtails && (
-              <>
-                <rect x="2" y="7.5" width="2.5" height="2" fill={hair} />
-                <rect x="11.5" y="7.5" width="2.5" height="2" fill={hair} />
-              </>
-            )}
-            {spec.hasHairBow && (
-              <>
-                <rect x="7.5" y="3.5" width="1" height="1" fill="#ef4444" />
-                <rect x="6.5" y="3" width="1" height="1.5" fill="#ef4444" />
-                <rect x="8.5" y="3" width="1" height="1.5" fill="#ef4444" />
-              </>
-            )}
-          </>
-        )}
-
-        {spec.gender === "m" && (
-          <>
-            {spec.hasBeard && (
-              <rect x="5" y="10" width="6" height="1" fill={hair} />
-            )}
-            {spec.hasHeadphones && (
-              <>
-                {/* cyan headphones headband */}
-                <rect x="5" y="4" width="6" height="0.5" fill="#06b6d4" />
-                {/* cyan pads */}
-                <rect x="4" y="6" width="1" height="3" fill="#06b6d4" />
-                <rect x="11" y="6" width="1" height="3" fill="#06b6d4" />
-              </>
-            )}
-          </>
-        )}
-
-        {spec.hasGlasses && (
-          <>
-            <rect x="5" y="7" width="2.5" height="1" fill="rgba(34, 211, 238, 0.55)" />
-            <rect x="8.5" y="7" width="2.5" height="1" fill="rgba(34, 211, 238, 0.55)" />
-            <rect x="5" y="7" width="6" height="0.5" fill="#111827" />
-            <rect x="7.5" y="7.5" width="1" height="0.5" fill="#111827" />
-          </>
-        )}
-
-        {/* NECK */}
-        <rect x="7" y="10.5" width="2" height="1" fill={skin} />
-
-        {/* SHIRT & WORKWEAR */}
-        <rect x="5" y="11.5" width="6" height="5.5" fill={shirt} />
-        {/* SLEEVES */}
-        <rect x="4" y="11.5" width="1.1" height="4" fill={shirt} />
-        <rect x="10.9" y="11.5" width="1.1" height="4" fill={shirt} />
-
-        {/* TIE */}
-        {spec.hasTie && (
-          <>
-            <rect x="7.5" y="11.5" width="1" height="1" fill="#111827" />
-            <rect x="7.5" y="12.5" width="1" height="2.5" fill="#ef4444" />
-          </>
-        )}
-
-        {/* HANDS */}
-        <rect x="4" y="15.5" width="1" height="1" fill={skin} />
-        <rect x="11" y="15.5" width="1" height="1" fill={skin} />
-
-        {/* LEGS/TROUSERS/SKIRT */}
-        <rect x="5" y="17" width="6" height="4" fill={pants} />
-        {spec.gender === "f" ? (
-          <>
-            {/* Bare legs below skirt */}
-            <rect x="6" y="21" width="1" height="1" fill={skin} />
-            <rect x="9" y="21" width="1" height="1" fill={skin} />
-          </>
-        ) : (
-          <>
-            {/* split leg lines */}
-            <rect x="7.5" y="18" width="1" height="3" fill="#070a12" opacity="0.3" />
-          </>
-        )}
-
-        {/* SHOES */}
-        <rect x="5.5" y="21.5" width="1.8" height="1" fill="#1e293b" />
-        <rect x="8.7" y="21.5" width="1.8" height="1" fill="#1e293b" />
-        <rect x="5.3" y="22" width="2" height="0.5" fill="#090d16" />
-        <rect x="8.7" y="22" width="2" height="0.5" fill="#090d16" />
-      </svg>
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-3 bg-black/60 rounded-full blur-sm pointer-events-none z-0" />
+      {/* Model image */}
+      <img
+        src={modelImg}
+        alt={id}
+        className="w-[88px] h-[88px] object-contain z-10 animate-sprite-bob rounded-2xl"
+        style={{
+          imageRendering: "pixelated",
+          filter: `drop-shadow(0 6px 14px ${glow}) drop-shadow(0 0 8px ${glow})`,
+        }}
+      />
     </div>
   );
 };
@@ -471,29 +204,41 @@ const getRoomTheme = (id: RoomId) => {
   }
 };
 
+// Visual floor center for each room as % of its bounding box — tuned per hex shape
+// All boxes are centered at the floor — use 50/50 for all
+const ROOM_FLOOR_CENTER: Partial<Record<RoomId, { x: number; y: number }>> = {
+  [RoomId.LOBBY]:    { x: 50, y: 50 },
+  [RoomId.MEETING]:  { x: 50, y: 50 },
+  [RoomId.PROJECT]:  { x: 50, y: 50 },
+  [RoomId.HELPDESK]: { x: 50, y: 50 },
+  [RoomId.PANTRY]:   { x: 50, y: 50 },
+  [RoomId.FOCUS]:    { x: 50, y: 50 },
+};
+
 const getRoomCoordinates = (id: RoomId, isImgBg: boolean) => {
   if (!isImgBg) {
     const original = OFFICE_ROOMS.find(r => r.id === id);
     return original ? original.coordinates : { x: 0, y: 0, width: 0, height: 0 };
   }
 
+  // Hotspot boxes matched to red rectangles in reference image
   switch (id) {
-    case RoomId.LOBBY: // CEO Room (Top Left)
-      return { x: 12.5, y: 1.5, width: 25.5, height: 35.5 };
-    case RoomId.HR: // HR (Also inside CEO room, maybe lower right part of CEO room)
-      return { x: 23, y: 15, width: 14, height: 22 };
-    case RoomId.MEETING: // SA Room (Top Right)
-      return { x: 50.5, y: 1.5, width: 27.5, height: 35.5 };
-    case RoomId.FOCUS: // Focus (Also inside SA room, right-hand corner)
-      return { x: 62, y: 15, width: 16, height: 22 };
-    case RoomId.PROJECT: // QA Room (Bottom Left)
-      return { x: 4.5, y: 35, width: 26.5, height: 37.5 };
-    case RoomId.HELPDESK: // HELP-BOT (Bottom Center)
-      return { x: 31.5, y: 59, width: 28.5, height: 31.5 };
-    case RoomId.DEVAREA: // Mapped inside HELP-BOT too (e.g. computer terminal area)
-      return { x: 38, y: 64, width: 22, height: 26 };
-    case RoomId.PANTRY: // Pantry Room (Bottom Right)
-      return { x: 58.5, y: 35, width: 27.5, height: 37.5 };
+    case RoomId.LOBBY:    // CEO room floor
+      return { x: 14, y: 10, width: 28, height: 26 };
+    case RoomId.HR:
+      return { x: 6,  y: 8,  width: 14, height: 14 };
+    case RoomId.MEETING:  // SA room floor
+      return { x: 63, y: 10, width: 36, height: 26 };
+    case RoomId.PROJECT:  // QA room floor
+      return { x: 8,  y: 46, width: 26, height: 30 };
+    case RoomId.HELPDESK: // Helper-Bot holographic area
+      return { x: 38, y: 64, width: 30, height: 29 };
+    case RoomId.DEVAREA:
+      return { x: 33, y: 58, width: 14, height: 14 };
+    case RoomId.PANTRY:   // Pantry floor
+      return { x: 73, y: 46, width: 19, height: 30 };
+    case RoomId.FOCUS:    // Lobby center
+      return { x: 34, y: 33, width: 27, height: 27 };
     default:
       return { x: 0, y: 0, width: 0, height: 0 };
   }
@@ -572,7 +317,7 @@ export default function OfficeMap({
   };
 
   return (
-    <div className="relative w-full h-[580px] bg-[#070a13] rounded-3xl overflow-hidden border border-[#161e33] shadow-[0_30px_60px_rgba(0,0,0,0.8)] flex flex-col select-none">
+    <div className="relative w-full h-full bg-[#070a13] overflow-hidden flex flex-col select-none">
       
       {/* Top Map Action Bar Overlay */}
       <div className="absolute top-4 left-4 z-20 flex gap-2">
@@ -592,32 +337,32 @@ export default function OfficeMap({
       </div>
 
       {/* Main Office Stage Area */}
-      <div className="flex-1 w-full h-full flex items-center justify-center overflow-hidden p-4 relative bg-[#070a12]">
-        
-        {/* Ambient Grid Wallpaper Lines and floor boards */}
-        <div className="absolute inset-0 bg-[#070a12] bg-[radial-gradient(#17223d_1.2px,transparent_1.2px)] [background-size:16px_16px] opacity-60"></div>
+      <div className="flex-1 w-full h-full flex items-center justify-center overflow-hidden relative bg-[#060a14]">
 
-        {/* 3D Isometric container bounds */}
+        {/* Subtle dot grid ambient */}
+        <div className="absolute inset-0 bg-[radial-gradient(#1a2a4a_1px,transparent_1px)] [background-size:20px_20px] opacity-40 pointer-events-none"></div>
+
+        {/* Isometric map container — height-first scaling */}
         <div
-          className="relative transition-all duration-700 flex items-center justify-center max-w-full max-h-full"
+          className="relative transition-all duration-700"
           style={{
-            transform: `scale(${zoomLevel})`, // Background image is already isometric, so we do not rotate/skew!
+            transform: `scale(${zoomLevel})`,
+            transformOrigin: "center center",
             transformStyle: "preserve-3d",
-            width: "100%",
-            height: "auto",
+            height: "100%",
+            width: "auto",
             maxWidth: "100%",
-            maxHeight: "100%",
-            aspectRatio: "1408 / 768",
+            aspectRatio: "1536 / 1024",
           }}
         >
           {/* Base Floor Foundation Plate with outer walls shadow */}
-          <div className="absolute inset-0 bg-[#070a13] rounded-[48px] border-[5px] border-[#1d263a] shadow-[0_60px_120px_rgba(0,0,0,0.95)] overflow-hidden" 
+          <div className="absolute inset-0 bg-[#060a14] rounded-[32px] border-2 border-[#1a2540]/60 shadow-[0_40px_100px_rgba(0,0,0,0.95)] overflow-hidden"
                style={{ transform: "translateZ(-2px)", transformStyle: "preserve-3d" }}>
-            
+
             {isIsometric ? (
-              <img 
-                src={officeMapImg} 
-                className="absolute inset-0 w-full h-full object-fill rounded-[42px]" 
+              <img
+                src={officeMapImg}
+                className="absolute inset-0 w-full h-full object-cover rounded-[30px]"
                 alt="Office Map Floor"
                 referrerPolicy="no-referrer"
               />
@@ -684,15 +429,15 @@ export default function OfficeMap({
                 key={room.id}
                 id={`room-tile-${room.id}`}
                 onClick={() => onRoomSelect(room.id)}
-                className={`absolute rounded-3xl border-2 cursor-pointer transition-all duration-300 flex flex-col justify-between p-3 overflow-hidden text-left ${
-                  isIsometric 
-                    ? isTargeted 
-                      ? "z-10 border-cyan-400 bg-cyan-400/5 ring-4 ring-cyan-500/20 shadow-[0_0_20px_rgba(34,211,238,0.2)]" 
-                      : "z-0 border-transparent bg-transparent hover:bg-white/5 hover:border-slate-800/30"
+                className={`absolute cursor-pointer transition-all duration-300 flex flex-col justify-between p-3 overflow-hidden text-left ${
+                  isIsometric
+                    ? isTargeted
+                      ? "z-10 bg-cyan-400/[0.06]"
+                      : "z-0 bg-transparent hover:bg-white/[0.025]"
                     : theme.textColor + " " + theme.border + " " + (
-                      isTargeted 
-                        ? "z-10 border-emerald-400 ring-4 ring-emerald-500/25 shadow-[0_0_25px_rgba(16,185,129,0.3)] scale-[1.03]" 
-                        : "z-0 shadow-[inset_2px_2px_0px_rgba(255,255,255,0.08),_inset_-2px_-2px_0px_rgba(0,0,0,0.5),_4px_4px_0px_rgba(0,0,0,0.4)] hover:border-slate-450 hover:scale-[1.01]"
+                      isTargeted
+                        ? "z-10 border-emerald-400 ring-4 ring-emerald-500/25 shadow-[0_0_25px_rgba(16,185,129,0.3)] scale-[1.03]"
+                        : "z-0 shadow-[inset_2px_2px_0px_rgba(255,255,255,0.08),_inset_-2px_-2px_0px_rgba(0,0,0,0.5),_4px_4px_0px_rgba(0,0,0,0.4)] hover:scale-[1.01]"
                     )
                 }`}
                 style={{
@@ -700,6 +445,10 @@ export default function OfficeMap({
                   top: `${coords.y}%`,
                   width: `${coords.width}%`,
                   height: `${coords.height}%`,
+                  border: isIsometric ? "none" : undefined,
+                  outline: "none",
+                  borderRadius: isIsometric ? 0 : undefined,
+                  zIndex: isTargeted ? 20 : room.id === RoomId.FOCUS ? 8 : 0,
                   transform: `translateZ(${isTargeted ? "16px" : "3px"})`,
                   transformStyle: "preserve-3d",
                   ...getRoomFloorStyle(room.id, isIsometric)
@@ -719,6 +468,15 @@ export default function OfficeMap({
                   <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-10 pointer-events-none select-none">
                     <span className={`px-2.5 py-0.5 text-[9px] font-black tracking-wider uppercase shadow-[2px_2px_0px_rgba(0,0,0,0.8)] font-mono rounded border border-slate-950/60 ${getRoomSignColor(room.id)}`}>
                       {room.nameEn}
+                    </span>
+                  </div>
+                )}
+
+                {/* Lobby always-visible click hint in isometric mode */}
+                {isIsometric && room.id === RoomId.FOCUS && !isTargeted && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <span className="bg-emerald-900/70 border border-emerald-500/40 text-emerald-300 text-[8px] font-bold font-mono px-2 py-0.5 rounded-full backdrop-blur-sm">
+                      🏢 LOBBY
                     </span>
                   </div>
                 )}
@@ -835,13 +593,14 @@ export default function OfficeMap({
               const charIndex = roommatesList.findIndex(c => c.id === char.id);
               
               const totalMates = roommatesList.length;
-              let xOffset = 45; 
-              let yOffset = 55;
+              const center = ROOM_FLOOR_CENTER[char.currentRoom] ?? { x: 50, y: 45 };
+              let xOffset = center.x;
+              let yOffset = center.y;
 
               if (totalMates > 1) {
-                const angle = (charIndex / totalMates) * Math.PI * 2;
-                xOffset = 45 + Math.cos(angle) * 25;
-                yOffset = 55 + Math.sin(angle) * 25;
+                const angle = (charIndex / totalMates) * Math.PI * 2 - Math.PI / 2;
+                xOffset = center.x + Math.cos(angle) * 13;
+                yOffset = center.y + Math.sin(angle) * 9;
               }
 
               const coords = getRoomCoordinates(char.currentRoom, isIsometric);
