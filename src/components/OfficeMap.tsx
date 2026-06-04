@@ -18,7 +18,9 @@ import {
   Navigation,
   Sparkles,
   Layers,
-  MapPin
+  MapPin,
+  Maximize2,
+  Minimize2
 } from "lucide-react";
 
 interface OfficeMapProps {
@@ -507,7 +509,8 @@ export default function OfficeMap({
   recentDialogs
 }: OfficeMapProps) {
   const [isIsometric, setIsIsometric] = useState<boolean>(true);
-  const [zoomLevel, setZoomLevel] = useState<number>(1.0);
+  const [zoomLevel, setZoomLevel] = useState<number>(1.1);
+  const [isExpanded, setIsExpanded] = useState<boolean>(true);
 
   // Helper code to fetch sign layout colors
   const getRoomSignColor = (id: RoomId) => {
@@ -572,7 +575,11 @@ export default function OfficeMap({
   };
 
   return (
-    <div className="relative w-full h-[580px] bg-[#070a13] rounded-3xl overflow-hidden border border-[#161e33] shadow-[0_30px_60px_rgba(0,0,0,0.8)] flex flex-col select-none">
+    <div className={`relative w-full transition-all duration-500 bg-[#070a13] rounded-3xl overflow-hidden border border-[#161e33] shadow-[0_30px_60px_rgba(0,0,0,0.8)] flex flex-col select-none ${
+      isExpanded 
+        ? "h-[640px] md:h-[740px] lg:h-[820px] xl:h-[880px]" 
+        : "h-[540px]"
+    }`}>
       
       {/* Top Map Action Bar Overlay */}
       <div className="absolute top-4 left-4 z-20 flex gap-2">
@@ -589,6 +596,21 @@ export default function OfficeMap({
           <Navigation className="w-3 h-3 text-emerald-400 animate-pulse" />
           {isIsometric ? "3D ISOMETRIC DEV SUITE" : "2D CONTAINER BLUEPRINT"}
         </span>
+      </div>
+
+      {/* Top Right Action Bar Overlay */}
+      <div className="absolute top-4 right-4 z-20 flex gap-2">
+        <button
+          onClick={() => {
+            setIsExpanded(!isExpanded);
+            setZoomLevel(!isExpanded ? 1.15 : 0.95);
+          }}
+          className="px-3 py-1.5 bg-[#0e1424]/90 hover:bg-[#1a253e] text-[11px] font-bold text-cyan-350 border border-[#202e4d] rounded-xl flex items-center gap-1.5 transition-all shadow-lg active:scale-95 cursor-pointer text-cyan-300"
+          title={isExpanded ? "ย่อขนาดแผนที่ลง" : "ขยายขนาดแผนที่ให้เต็มพื้นที่"}
+        >
+          {isExpanded ? <Minimize2 className="w-3.5 h-3.5 text-cyan-400" /> : <Maximize2 className="w-3.5 h-3.5 text-cyan-400" />}
+          <span className="font-sans text-[11px]">{isExpanded ? "ย่อแผนที่" : "ขยายแผนที่เต็มหน้า"}</span>
+        </button>
       </div>
 
       {/* Main Office Stage Area */}
@@ -890,6 +912,42 @@ export default function OfficeMap({
                       <div className="absolute top-[98%] left-1/2 -translate-x-1/2 w-2 h-2 bg-white border-r-2 border-b-2 border-slate-950 rotate-45 transform -translate-y-[4px]"></div>
                     </motion.div>
                   )}
+
+                  {/* Fallback persistent speech bubble (matches reference mock-up layout perfectly) */}
+                  {!hasMessage && (() => {
+                    const getFallbackCharacterBubble = (charId: string): string | null => {
+                      switch (charId) {
+                        case "user":
+                          return "Let's go!";
+                        case "audit-ai":
+                          return "Verify!";
+                        case "senior-dev": // Chart AI
+                          return "Buy zone";
+                        case "helper-bot": // EA Bot
+                          return "TP ready";
+                        case "alert-ai":
+                          return "Spike!";
+                        case "strategy-ai":
+                          return "Rotate!";
+                        case "code-reviewer": // Report AI
+                          return "Formatting";
+                        default:
+                          return null;
+                      }
+                    };
+                    const text = getFallbackCharacterBubble(char.id);
+                    if (!text) return null;
+                    return (
+                      <div 
+                        className="absolute bottom-[66px] left-1/2 -translate-x-1/2 bg-white text-[9.5px] font-black font-sans text-slate-900 border-2 border-slate-950 px-2.5 py-0.5 rounded-xl shadow-[2px_2px_0px_rgba(0,0,0,1)] whitespace-nowrap z-35 flex items-center justify-center animate-[bounce_4s_infinite]"
+                        style={{ transformStyle: "preserve-3d", transform: "translateZ(10px)" }}
+                      >
+                        <span>{text}</span>
+                        {/* Triangle pointer */}
+                        <div className="absolute top-[96%] left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-white border-r-2 border-b-2 border-slate-950 rotate-45 transform -translate-y-[1.5px]"></div>
+                      </div>
+                    );
+                  })()}
 
                   {/* Character Node wrapper */}
                   <div className="flex flex-col items-center justify-center filter drop-shadow-[2px_4px_6px_rgba(0,0,0,0.6)]">
